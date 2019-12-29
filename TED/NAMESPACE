@@ -1,0 +1,9 @@
+import(DESeq2)
+import(parallel)
+import(MCMCpack)
+import(gplots)
+
+export(run.Ted)
+export(learn.embedding.withPhiTum)
+export(learn.embedding.Kcls)
+export(norm.to.one)
