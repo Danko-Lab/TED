@@ -18,7 +18,7 @@ https://www.biorxiv.org/content/10.1101/2020.01.07.897900v1
 
 
 
-Workflow of tfTarget
+Workflow of TED
 --------
 <img src="img/img1.png">
 
