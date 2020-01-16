@@ -12,6 +12,8 @@ Bayesian Inference of Cell Composition and Gene Expression Reveals Tumor-Microen
 
 Tinyi Chu and Charles Danko
 
+https://www.biorxiv.org/content/10.1101/2020.01.07.897900v1
+
 --------
 
 
