@@ -362,9 +362,24 @@ run.Ted <- function(input.phi,
 		colnames(Zkg.tum) <- colnames(X)
 		rownames(Zkg.tum) <- rownames(X)
 	
-		Zkg.tum.vst <- vst( t(round(Zkg.tum)))
 		Zkg.tum.norm <- norm.to.one(t(Zkg.tum), min(input.phi))
-	
+		
+		#whether possible to compute vst transformation on tumor expression
+		#if every gene has at least one zero, vst is not possible, then only export Zkg.tum.norm
+		Zkg.tum.round <- t(round(Zkg.tum))
+		if.vst <- sum(apply(Zkg.tum.round,1,min)==0)< nrow(Zkg.tum.round)
+		
+		if(if.vst) {
+			print("vst transformation is feasible")
+			Zkg.tum.vst <- vst(Zkg.tum.round)
+			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst, sig.gene= sig.gene)
+		}
+		else {
+			print("every gene has at least one zero. vst transformation is NOT feasible")
+			Zkg.tum.vst <- NULL
+			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.norm, sig.gene= sig.gene)
+		}
+		
 		print("run final sampling")
 		final.gibbs.theta <- run.gibbs.individualPhi ( phi.tum = t(Zkg.tum.norm), 
 												 phi.hat.env= phi.env.batch.corrected, 
@@ -376,28 +391,21 @@ run.Ted <- function(input.phi,
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
 	
-		#cor.mat <- get.cormat ( Zkg.tum.norm= Zkg.tum.norm, sig.gene)
-		cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst, sig.gene= sig.gene)
-	
 		if(!is.null(file.name)) plot.heatmap(dat= cor.mat, pdf.name= pdf.name, cluster=T, self=T, show.value=F, metric="is.cor")
 	
 		if(!is.null(file.name)) sink()
 		
-
-	
 		res <- list(first.gibbs.res= first.gibbs.res,
 				Z.tum.first.gibbs = Zkg.tum,
 				Zkg.tum.norm = Zkg.tum.norm,
-				Zkg.tum.vst= Zkg.tum.vst,
+				Zkg.tum.vst = Zkg.tum.vst,
 				phi.env= phi.env.batch.corrected,
 				final.gibbs.theta = final.gibbs.theta,
 				cor.mat= cor.mat)
 	
-
 		return(list(para= para, res= res))	
 	}
 	
-
 	else{
 		batch.opt.res <- optimize.psi(input.phi = input.phi,
 					   			Zkg = first.gibbs.res $Zkg,

@@ -73,7 +73,13 @@ Interpreting the results of deconvolution
 --------------------------------------------------
 TED keeps both θ0, the initial estimates of cell type compositions, and θ, the updated estimates of cell type compositions in the output. In most cases, users should use the updated θ as it often improves over the initial estimates. Occasionally in some cases, the initial estimates θ0 shall be used. For example, the mixture contains small amount of tumor fraction (<50%), or the reference and mixture do not have batch effects, e.g. reference profiles are obtained from the same bulk RNA-seq platforms from flow-sorted cells. 
 
-
+Typical runtime of TED
+--------
+<img src="img/img2.png">
+Test case: refGBM8 deconvolve GBM280
+#of genes: 18462; #of mixtures: 280
+The computing time of CIBERSORTx is tested on https://cibersortx.stanford.edu.
+The computing time of TED is tested on Intel(R) Xeon(R) CPU E5-4620 v2 @ 2.60GHz.
 
 Documents
 ----------

@@ -44,7 +44,7 @@ A list of result is returned in this function.
   \item{res$first.gibbs.res$Znkg}{Mean of posterior of gene expression in each cell type and each patient.}
   \item{res$first.gibbs.res$Z.tum.first.gibbs}{Mean of posterior of gene expression of tumor in each patient.}
   \item{res$first.gibbs.res$Zkg.tum.norm}{Depth normalized Z.tum.first.gibbs (A pseudo count is added, such that the zero-valued genes have the same value as the min(phi.input)). Refered to as the psi.tum in the TED paper)}
-  \item{res$first.gibbs.res$Zkg.tum.vst}{Variance stablized transformed value of Z.tum.first.gibbs}
+  \item{res$first.gibbs.res$Zkg.tum.vst}{Variance stablized transformed value of Z.tum.first.gibbs. If vst transformation is not feasible, return NULL. }
   \item{res$first.gibbs.res$phi.env}{Batch effect corrected expression profiles of stromal cells (refered to as the psi.str in the TED paper)}
   \item{res$ final.gibbs.theta}{Updated theta after batch correction and tumor expression estimates.}
   \item{res$ cor.mat}{The correlation matrix of the estimated tumor expression profiles across bulk RNA-seq samples.}
