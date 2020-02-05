@@ -28,7 +28,7 @@ Requires
 
 * R packages:
 	
-	DESeq2, parallel, MCMCpack, gplots
+	DESeq2(>1.22.2), MCMCpack(> 1.4-4), parallel, gplots
 	
 Installation
 --------
@@ -67,7 +67,7 @@ Although TED does not assume the expression of tumor cells are completely observ
 
 Different RNA-seq platforms may contain systematic batch effects that cannot be corrected by TED. Loosely speaking, TED can correct batch effects for genes where the relative  expression holds across platforms. Therefore, genes that are detectable in one batch but are not detectable in the other should be excluded. We found a systematic enrichment in the non-coding genes in refGBM8 compared to the TCGA dataset, and hence removed these genes in constructing the reference profile. Also genes on the Y chromosome are also excluded in the reference. 
 
-TED uses the raw count to generate the reference profile, and normalizes each cell by its total count. To avoid exact zeros in the reference profile. The TED R package provides a function norm.to.one to add a computed pseudo count to each cell type, such that after normalization the zero counted genes have the same value (default=10-8) across all cell types. Ideally users should keep the sequencing depth roughly the same across cell types, but in general, TED is robust to the variation in the sequencing depth, and maintains the relative ratio in inferred fractions even if an extremely shallowly sequenced cell type is used, such as the T cell in refGBM8. 
+TED uses the raw count to generate the reference profile, and normalizes each cell by its total count. To avoid exact zeros in the reference profile. The TED R package automatically add a computed pseudo count to each cell type, such that after normalization the zero counted genes have the same value (default=10-8) across all cell types. Users may either provide a collapsed reference gene expression profile (GEP) from the scRNA-seq, or supply the raw count matrix of individual cells. Genes need not to be aligned between the reference matrix and the bulk matrix. run.Ted will automatically collapse, align the genes on the common subset between reference and bulk, and normalized the scRNA-seq reference. Ideally users should keep the sequencing depth roughly the same across cell types, but in general, TED is robust to the variation in the sequencing depth, and maintains the relative ratio in inferred fractions even if an extremely shallowly sequenced cell type is used, such as the T cell in refGBM8. 
 
 Interpreting the results of deconvolution
 --------------------------------------------------
@@ -85,7 +85,7 @@ Documents
 ----------
 
 * R vignette:
- (Coming soon)
+ https://github.com/Danko-Lab/TED/blob/master/vignette.pdf
 
 * R manual:
  (Coming soon)
