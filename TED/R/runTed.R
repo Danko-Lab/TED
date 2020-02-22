@@ -259,8 +259,8 @@ run.Ted <- function(ref.dat,
 				first.gibbs.only=F){
 				    	
 	#check input data format
-	if(is.null(rownames(ref.dat)) || is.null(colnames(ref.dat))) stop("Error: please specify the row/col names of ref.dat!")
-	if(is.null(rownames(X)) || is.null(colnames(X))) stop("Error: please specify the row/col names of ref.dat!")
+	if( is.null(colnames(ref.dat))) stop("Error: please specify the gene names of ref.dat!")
+	if( is.null(colnames(X))) stop("Error: please specify the gene names of X!")
 
 	#rm any genes with non numeric values (including NA values)
 	print("removing non-numeric genes...")
