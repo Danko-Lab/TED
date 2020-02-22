@@ -264,8 +264,8 @@ run.Ted <- function(ref.dat,
 
 	#rm any genes with non numeric values (including NA values)
 	print("removing non-numeric genes...")
-	ref.dat <- ref.dat[,apply(ref.dat,2,function(ref.dat.gene.i) is.numeric (ref.dat.gene.i) | is.finite (ref.dat.gene.i) )]
-	X <- X[,apply(X,2,function(X.gene.i) is.numeric (X.gene.i) | is.finite (X.gene.i))]
+	ref.dat <- ref.dat[,apply(ref.dat,2,function(ref.dat.gene.i) as.logical(prod(is.numeric (ref.dat.gene.i),is.finite (ref.dat.gene.i))))]
+	X <- X[,apply(X,2,function(X.gene.i) as.logical (prod(is.numeric (X.gene.i), is.finite (X.gene.i))))]
 	
 	
 	print("removing outlier genes...")
