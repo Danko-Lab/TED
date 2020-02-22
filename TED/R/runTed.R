@@ -249,6 +249,7 @@ run.Ted <- function(ref.dat,
 				psudeo.min=1E-8, 
 				alpha=1,
 				sigma=2,
+				outlier.cut=0.05,
 				gibbs.control=list(chain.length=400,burn.in=200,thinning=2),
 				opt.control=list(trace=0, maxit= 100000),
 				file.name=NULL,
@@ -257,10 +258,27 @@ run.Ted <- function(ref.dat,
 				pdf.name=NULL,
 				first.gibbs.only=F){
 				    	
+	#check input data format
+	if(is.null(rownames(ref.dat)) || is.null(colnames(ref.dat))) stop("Error: please specify the row/col names of ref.dat!")
+	if(is.null(rownames(X)) || is.null(colnames(X))) stop("Error: please specify the row/col names of ref.dat!")
+
+	#rm any genes with non numeric values (including NA values)
+	print("removing non-numeric genes...")
+	ref.dat <- ref.dat[,apply(ref.dat,2,function(ref.dat.gene.i) is.numeric (ref.dat.gene.i) | is.finite (ref.dat.gene.i) )]
+	X <- X[,apply(X,2,function(X.gene.i) is.numeric (X.gene.i) | is.finite (X.gene.i))]
 	
-	stopifnot(input.type %in% c("scRNA","GEP"))
 	
-	print("processing input...")
+	print("removing outlier genes...")
+	X.norm <- apply(X,1,function(vec)vec/sum(vec))
+	filter.idx <- apply(X.norm,1,max)<outlier.cut
+	X<- X[, filter.idx]
+	num.genes.filtered <- sum(! filter.idx)
+	cat("Number of outlier genes filtered=", num.genes.filtered,"\n")
+	
+
+	if(! input.type %in% c("scRNA","GEP")) stop("Error: please specify the correct input.type!")
+	
+	print("aligning reference and mixture...")
 	
 	if(input.type=="GEP"){
 		processed.dat <- process_GEP (ref= ref.dat,
@@ -277,7 +295,16 @@ run.Ted <- function(ref.dat,
 										pheno.labels= as.character(pheno.labels))
 	}
 	
-	tum.idx <- which(grepl(tum.key,rownames(processed.dat$ref.matched.norm)))
+	if(!is.null(tum.key)) {
+		tum.idx <- which(grepl(tum.key,rownames(processed.dat$ref.matched.norm)))
+		if(length(tum.idx)==0) stop("Error: tum.key is not matched to any rownames of the reference, please check the spelling!")
+	}
+	else {
+		tum.idx <- NULL
+		first.gibbs.only<-TRUE
+		print("No tumor reference is speficied. Reference profiles are treated equally. Only the initial Gibbs sampling will be run!")
+	}
+	
 	
 	rm(ref.dat,X, pheno.labels)
 	gc()
