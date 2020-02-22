@@ -94,9 +94,9 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 	G<-ncol(phi.hat)
 	K.tot <-  nrow(phi.hat) 
 	
-
+	cat("current sample ID:")
 	Zkg.theta <- mclapply(1:N, FUN=function(i){
-								   #cat(i," ")
+								   cat(i," ");
 								   sample.n(X.i=X[i,],
 								   theta.ini.i = theta.ini[i,], 
 								   phi.hat = phi.hat,
@@ -104,7 +104,8 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 								   gibbs.idx= thinned.idx,
 								   conditional.idx= conditional.idx,
 								   compute.posterior= compute.posterior)}, mc.cores=n.cores)
-		 
+	 cat("\n") 
+	 
 	 gibbs.theta <- array(NA,c(N, K.tot))
 	 rownames(gibbs.theta) <- rownames(X)
 	 colnames(gibbs.theta) <- rownames(phi.hat)
@@ -140,8 +141,10 @@ draw.sample.gibbs.individualPhi <-function(theta.ini, phi.tum, phi.hat.env, X, a
 	
 	N <- nrow(X)
 	K.tot <-  nrow(phi.hat.env) +1 
-		
+	
+	cat("current sample ID:")	
 	Zkg.theta <- mclapply(1:N, FUN=function(i){
+								   cat(i," ");
 								   sample.n(X.i=X[i,],
 								   			theta.ini.i = theta.ini[i,], 
 								   			phi.hat = rbind(phi.tum[i,], phi.hat.env),
@@ -149,7 +152,8 @@ draw.sample.gibbs.individualPhi <-function(theta.ini, phi.tum, phi.hat.env, X, a
 								   			gibbs.idx= thinned.idx,
 								   			conditional.idx= NULL,
 								   			compute.posterior=F)}, mc.cores=n.cores)
-								   					 
+	 cat("\n")
+	  							   					 
 	 gibbs.theta <- array(NA,c(N, K.tot))
 	 rownames(gibbs.theta) <- rownames(X)
 	 colnames(gibbs.theta) <- c("Tumor", rownames(phi.hat.env))
@@ -159,13 +163,6 @@ draw.sample.gibbs.individualPhi <-function(theta.ini, phi.tum, phi.hat.env, X, a
 	return(gibbs.theta)
 
 }
-
-
-
-
-
-
-
 
 
 
@@ -253,11 +250,6 @@ optimize.psi<-function(input.phi,
 	return(list(opt.psi= opt.psi, log.posterior= log.posterior.tum))				   	
 
 }
-
-
-
-
-
 
 
 

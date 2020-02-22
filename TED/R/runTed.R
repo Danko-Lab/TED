@@ -301,8 +301,7 @@ run.Ted <- function(ref.dat,
 	}
 	else {
 		tum.idx <- NULL
-		first.gibbs.only<-TRUE
-		print("No tumor reference is speficied. Reference profiles are treated equally. Only the initial Gibbs sampling will be run!")
+		print("No tumor reference is speficied. Reference profiles are treated equally.")
 	}
 	
 	
