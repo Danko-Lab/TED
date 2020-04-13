@@ -162,7 +162,7 @@ run.Ted.main <- function(input.phi,
 					   			
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi[-tum.idx,], log.fold = batch.opt.res $opt.psi)
 
-		Zkg.tum <- apply(first.gibbs.res$Znkg[, tum.idx,],c(1,3),sum)
+		Zkg.tum <- apply(first.gibbs.res$Znkg[, tum.idx,,drop=F],c(1,3),sum)
 		colnames(Zkg.tum) <- colnames(X)
 		rownames(Zkg.tum) <- rownames(X)
 	
