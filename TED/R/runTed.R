@@ -287,7 +287,6 @@ run.Ted <- function(ref.dat,
 	}
 	if(input.type=="scRNA"){
 		stopifnot(nrow(ref.dat)==length(pheno.labels))
-		stopifnot(!is.null(tum.key))
 		
 		processed.dat <- process_scRNA (ref= ref.dat,
 										mixture=X, 
