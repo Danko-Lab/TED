@@ -116,6 +116,7 @@ run.Ted.main <- function(input.phi,
 				    opt.control=list(trace=0, maxit= 100000),
 				    file.name=NULL,
 				    n.cores=1,
+				    n.cores.batch = n.cores.batch,
 				    tum.idx,
 				    sig.gene=NULL, 
 				    pdf.name=NULL,
@@ -134,6 +135,7 @@ run.Ted.main <- function(input.phi,
 				 gibbs.control= gibbs.control,
 				 opt.control= opt.control,
 				 n.cores= n.cores,
+				 n.cores.batch = n.cores.batch,
 				 sig.gene= sig.gene)
 	
 	
