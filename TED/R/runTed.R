@@ -158,7 +158,7 @@ run.Ted.main <- function(input.phi,
 					   			Zkg = first.gibbs.res $Zkg[-tum.idx,],
 					   			prior.mat = env.prior.mat,
 					   			opt.control = opt.control,
-					   			n.cores = round(n.cores/4))
+					   			n.cores = n.cores)
 					   			
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi[-tum.idx,], log.fold = batch.opt.res $opt.psi)
 
@@ -215,7 +215,7 @@ run.Ted.main <- function(input.phi,
 					   			Zkg = first.gibbs.res $Zkg,
 					   			prior.mat = env.prior.mat,
 					   			opt.control = opt.control,
-					   			n.cores = round(n.cores/4))
+					   			n.cores = n.cores)
 					   			
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi, log.fold = batch.opt.res $opt.psi)
 		
