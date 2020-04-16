@@ -138,6 +138,8 @@ run.Ted.main <- function(input.phi,
 	
 	
 	print("run first sampling")
+	core_report = paste0("Using ",n.cores," cores")
+	print(core_report)
 		
 	first.gibbs.res <- run.gibbs (input.phi= input.phi, 
 					  			  X=X,
@@ -149,6 +151,8 @@ run.Ted.main <- function(input.phi,
 	if(first.gibbs.only) return(list(para= para, res= list(first.gibbs.res= first.gibbs.res)))
 	
 	print("correct batch effect")
+	core_report = paste0("Using ",n.cores.batch," cores")
+	print(core_report)
 	env.prior.num <- -1 / (2* sigma ^2)
 	env.prior.mat <- matrix(env.prior.num, nrow= nrow(input.phi)-length(tum.idx), ncol=ncol(input.phi))
 	
@@ -158,7 +162,7 @@ run.Ted.main <- function(input.phi,
 					   			Zkg = first.gibbs.res $Zkg[-tum.idx,],
 					   			prior.mat = env.prior.mat,
 					   			opt.control = opt.control,
-					   			n.cores = n.cores)
+					   			n.cores = n.cores.batch)
 					   			
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi[-tum.idx,], log.fold = batch.opt.res $opt.psi)
 
@@ -215,11 +219,13 @@ run.Ted.main <- function(input.phi,
 					   			Zkg = first.gibbs.res $Zkg,
 					   			prior.mat = env.prior.mat,
 					   			opt.control = opt.control,
-					   			n.cores = n.cores)
+					   			n.cores = n.cores.batch)
 					   			
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi, log.fold = batch.opt.res $opt.psi)
 		
 		print("run final sampling")
+		core_report = paste0("Using ",n.cores," cores")
+		print(core_report)
 
 		final.gibbs.res <- run.gibbs (input.phi= phi.env.batch.corrected, 
 					  			  X=X,
@@ -254,6 +260,7 @@ run.Ted <- function(ref.dat,
 				opt.control=list(trace=0, maxit= 100000),
 				file.name=NULL,
 				n.cores=1,
+				n.cores.batch = NULL,
 				sig.gene=NULL,
 				pdf.name=NULL,
 				first.gibbs.only=F){
@@ -267,6 +274,10 @@ run.Ted <- function(ref.dat,
 	ref.dat <- ref.dat[,apply(ref.dat,2,function(ref.dat.gene.i) as.logical(prod(is.numeric (ref.dat.gene.i),is.finite (ref.dat.gene.i))))]
 	X <- X[,apply(X,2,function(X.gene.i) as.logical (prod(is.numeric (X.gene.i), is.finite (X.gene.i))))]
 	
+	#process parallelization options
+	if(is.null(n.cores.batch)){
+	  n.cores.batch = n.cores
+	}
 	
 	print("removing outlier genes...")
 	X.norm <- apply(X,1,function(vec)vec/sum(vec))
@@ -315,6 +326,7 @@ run.Ted <- function(ref.dat,
 			 	  opt.control= opt.control,
 			 	  file.name= file.name,
 			 	  n.cores= n.cores,
+			 	  n.cores.batch = n.cores.batch,
 			 	  tum.idx= tum.idx,
 			 	  sig.gene= sig.gene,
 			 	  pdf.name= pdf.name,
