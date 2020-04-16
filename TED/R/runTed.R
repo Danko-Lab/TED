@@ -140,8 +140,6 @@ run.Ted.main <- function(input.phi,
 	
 	
 	print("run first sampling")
-	core_report = paste0("Using ",n.cores," cores")
-	print(core_report)
 		
 	first.gibbs.res <- run.gibbs (input.phi= input.phi, 
 					  			  X=X,
@@ -153,8 +151,6 @@ run.Ted.main <- function(input.phi,
 	if(first.gibbs.only) return(list(para= para, res= list(first.gibbs.res= first.gibbs.res)))
 	
 	print("correct batch effect")
-	core_report = paste0("Using ",n.cores.batch," cores")
-	print(core_report)
 	env.prior.num <- -1 / (2* sigma ^2)
 	env.prior.mat <- matrix(env.prior.num, nrow= nrow(input.phi)-length(tum.idx), ncol=ncol(input.phi))
 	
@@ -226,8 +222,6 @@ run.Ted.main <- function(input.phi,
 		phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi, log.fold = batch.opt.res $opt.psi)
 		
 		print("run final sampling")
-		core_report = paste0("Using ",n.cores," cores")
-		print(core_report)
 
 		final.gibbs.res <- run.gibbs (input.phi= phi.env.batch.corrected, 
 					  			  X=X,
