@@ -173,13 +173,14 @@ run.Ted.main <- function(input.phi,
 		Zkg.tum.round <- t(round(Zkg.tum))
 		if.vst <- sum(apply(Zkg.tum.round,1,min)==0)< nrow(Zkg.tum.round)
 		
-		if(if.vst) {
+		if(if.vst & nrow(X)>1) {
 			print("vst transformation is feasible")
 			Zkg.tum.vst <- vst(Zkg.tum.round)
 			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst, sig.gene= sig.gene)
 		}
 		else {
-			print("every gene has at least one zero. vst transformation is NOT feasible")
+			if(nrow(X)==1) print("only one mixture sample. vst transformation is NOT feasible")
+			else print("every gene has at least one zero. vst transformation is NOT feasible")
 			Zkg.tum.vst <- NULL
 			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.norm, sig.gene= sig.gene)
 		}
@@ -195,7 +196,7 @@ run.Ted.main <- function(input.phi,
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
 	
-		if(!is.null(pdf.name)) plot.heatmap(dat= cor.mat, pdf.name= pdf.name, cluster=T, self=T, show.value=F, metric="is.cor")
+		if(!is.null(pdf.name) & nrow(X)>1) plot.heatmap(dat= cor.mat, pdf.name= pdf.name, cluster=T, self=T, show.value=F, metric="is.cor")
 	
 		if(!is.null(file.name)) sink()
 		
@@ -265,13 +266,13 @@ run.Ted <- function(ref.dat,
 	#rm any genes with non numeric values (including NA values)
 	print("removing non-numeric genes...")
 	ref.dat <- ref.dat[,apply(ref.dat,2,function(ref.dat.gene.i) as.logical(prod(is.numeric (ref.dat.gene.i),is.finite (ref.dat.gene.i))))]
-	X <- X[,apply(X,2,function(X.gene.i) as.logical (prod(is.numeric (X.gene.i), is.finite (X.gene.i))))]
+	X <- X[,apply(X,2,function(X.gene.i) as.logical (prod(is.numeric (X.gene.i), is.finite (X.gene.i)))),drop=F]
 	
 	
 	print("removing outlier genes...")
 	X.norm <- apply(X,1,function(vec)vec/sum(vec))
 	filter.idx <- apply(X.norm,1,max)<outlier.cut
-	X<- X[, filter.idx]
+	X<- X[, filter.idx, drop=F]
 	num.genes.filtered <- sum(! filter.idx)
 	cat("Number of outlier genes filtered=", num.genes.filtered,"\n")
 	

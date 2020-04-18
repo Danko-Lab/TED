@@ -16,7 +16,7 @@ align.exp.df<-function(exp.df.list, df.names=NULL){
 	gene.id.list.matched <- lapply(1: length(exp.df.list), function(idx){
 		exp.df <- exp.df.list[[idx]]
 		gene.id <- gene.id.list[[idx]]
-		exp.df[match(gene.shared, gene.id),]
+		exp.df[match(gene.shared, gene.id),,drop=F]
 	}  )
 	
 	if(!is.null(df.names)) {
