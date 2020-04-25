@@ -65,8 +65,8 @@ norm.to.one<-function(exp.df, psudeo.min=1E-8){
 
 process_GEP <- function (ref, mixture, psudeo.min){
 	
-	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
+#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
+#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
 	
 	aligned.dat <- align.exp.df(exp.df.list=list(t(ref),t(mixture)), df.names=NULL)
 	
@@ -83,8 +83,8 @@ process_GEP <- function (ref, mixture, psudeo.min){
 
 process_scRNA <- function (ref, mixture, psudeo.min, pheno.labels){
 	
-	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
+#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
+#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
 	
 	ref.collpased <- collpase.exp.df(exp.df=t(ref), sample.type.vec= pheno.labels)
 	
