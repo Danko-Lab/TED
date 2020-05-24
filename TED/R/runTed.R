@@ -128,7 +128,8 @@ run.Ted.main <- function(input.phi,
 								  burn.in = gibbs.control$burn.in, 
 								  thinning = gibbs.control$thinning)
 	
-	para <- list(X=X, 
+	para <- list(X=X,
+				 input.phi= input.phi, 
 				 alpha= alpha,
 				 sigma= sigma,
 				 gibbs.control= gibbs.control,
