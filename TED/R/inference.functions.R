@@ -245,6 +245,12 @@ optimize.psi<-function(input.phi,
 
 
 	opt.psi <- do.call(rbind,lapply(opt.res, function(res) res$par))
+	
+	#06-02-2020, bug fix : if too close to the true solution (unstable gradient estimates), sometimes Rcgminu will get stuck at an extreme value
+	#set to 0 if extremes > 20 (biologically unlikely value), i.e. use MLE instead
+	
+	opt.psi[apply(abs(opt.psi),1,max) > 20,] <- 0
+	
 	log.posterior.tum<-unlist(lapply(opt.res, function(res) res$value))
 		
 	return(list(opt.psi= opt.psi, log.posterior= log.posterior.tum))				   	
