@@ -172,11 +172,12 @@ run.Ted.main <- function(input.phi,
 		#whether possible to compute vst transformation on tumor expression
 		#if every gene has at least one zero, vst is not possible, then only export Zkg.tum.norm
 		Zkg.tum.round <- t(round(Zkg.tum))
+		
 		if.vst <- sum(apply(Zkg.tum.round,1,min)==0)< nrow(Zkg.tum.round)
 		
 		if(if.vst & nrow(X)>1) {
 			print("vst transformation is feasible")
-			Zkg.tum.vst <- vst(Zkg.tum.round)
+			Zkg.tum.vst <- vst(Zkg.tum.round, nsub= min(nrow(Zkg.tum.round)/5,1000)) #adjust nsub, to avoid error when too few genes are used
 			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst, sig.gene= sig.gene)
 		}
 		else {
