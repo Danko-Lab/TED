@@ -35,7 +35,7 @@ collpase.exp.df<-function(exp.df, sample.type.vec){
 	
 	sample.type.uniq <-unique(sample.type.vec)
 	
-	exp.df.collapsed<-do.call(cbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[, sample.type.vec ==sample.type],1,sum)  ))
+	exp.df.collapsed<-do.call(cbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[, sample.type.vec ==sample.type,drop=F],1,sum)  ))
 	
 	colnames(exp.df.collapsed)<-sample.type.uniq
 	
