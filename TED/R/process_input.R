@@ -16,7 +16,7 @@ align.exp.df<-function(exp.df.list, df.names=NULL){
 	gene.id.list.matched <- lapply(1: length(exp.df.list), function(idx){
 		exp.df <- exp.df.list[[idx]]
 		gene.id <- gene.id.list[[idx]]
-		exp.df[match(gene.shared, gene.id),]
+		exp.df[match(gene.shared, gene.id),,drop=F]
 	}  )
 	
 	if(!is.null(df.names)) {
@@ -35,7 +35,7 @@ collpase.exp.df<-function(exp.df, sample.type.vec){
 	
 	sample.type.uniq <-unique(sample.type.vec)
 	
-	exp.df.collapsed<-do.call(cbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[, sample.type.vec ==sample.type],1,sum)  ))
+	exp.df.collapsed<-do.call(cbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[, sample.type.vec ==sample.type,drop=F],1,sum)  ))
 	
 	colnames(exp.df.collapsed)<-sample.type.uniq
 	
@@ -65,8 +65,8 @@ norm.to.one<-function(exp.df, psudeo.min=1E-8){
 
 process_GEP <- function (ref, mixture, psudeo.min){
 	
-	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
+#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
+#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
 	
 	aligned.dat <- align.exp.df(exp.df.list=list(t(ref),t(mixture)), df.names=NULL)
 	
@@ -83,8 +83,8 @@ process_GEP <- function (ref, mixture, psudeo.min){
 
 process_scRNA <- function (ref, mixture, psudeo.min, pheno.labels){
 	
-	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
+#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
+#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
 	
 	ref.collpased <- collpase.exp.df(exp.df=t(ref), sample.type.vec= pheno.labels)
 	
