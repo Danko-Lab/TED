@@ -1,24 +1,24 @@
-TED
+TED (now called BayesPrism)
 ========
 
-Tumor micro-Environment Deconvolution (TED): A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression
+Bayesian cell Proportion Reconstruction Inferred using Statistical Marginalization (BayesPrism): A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression
 
-TED is comprised of the deconvolution modules and the embedding learning module. The deconvolution module leverages cell type-specific expression profiles from scRNA-seq and implements a fully Bayesian inference to jointly estimate the posterior distribution of cell type composition and cell type-specific gene expression from bulk RNA-seq expression of tumor samples. The embedding learning module uses Expectation-maximization (EM) to approximate the tumor expression using a linear combination of tumor pathways while conditional on the inferred expression and fraction of non-tumor cells estimated by the deconvolution module. 
+BayesPrism is comprised of the deconvolution modules and the embedding learning module. The deconvolution module leverages cell type-specific expression profiles from scRNA-seq and implements a fully Bayesian inference to jointly estimate the posterior distribution of cell type composition and cell type-specific gene expression from bulk RNA-seq expression of tumor samples. The embedding learning module uses Expectation-maximization (EM) to approximate the tumor expression using a linear combination of tumor pathways while conditional on the inferred expression and fraction of non-tumor cells estimated by the deconvolution module. 
 
 
-Cite TED:
+Cite BayesPrism:
 --------
-Bayesian Inference of Cell Composition and Gene Expression Reveals Tumor-Microenvironment Interactions
+Bayesian cell-type deconvolution and gene expression inference reveals tumor-microenvironment interactions
 
 Tinyi Chu and Charles Danko
 
-https://www.biorxiv.org/content/10.1101/2020.01.07.897900v2
+https://www.biorxiv.org/content/10.1101/2020.01.07.897900v3
 
 --------
 
 
 
-Workflow of TED
+Workflow of BayesPrism
 --------
 <img src="img/img1.png">
 
