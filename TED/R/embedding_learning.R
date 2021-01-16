@@ -154,8 +154,8 @@ merge.tum.cls <- function(Zkg.tum.norm, cor.mat, K){
 	dendrogram<- hclust(dist(cor.mat),method="ward.D2")
 	cls <- cutree(dendrogram,k=K)
 		
-	phi.tum <- do.call(rbind, lapply(1:K, function(k) apply(Zkg.tum.norm[,cls==k,drop=F],1,mean) ))
-	colnames(phi.tum) <- rownames(Zkg.tum.norm)
+	phi.tum <- do.call(rbind, lapply(1:K, function(k) apply(Zkg.tum.norm[cls==k,,drop=F],2,mean) ))
+	colnames(phi.tum) <- colnames(Zkg.tum.norm)
 	rownames(phi.tum) <- paste("Tumor-", 1:K ,sep="")
 	phi.tum
 }

@@ -1,22 +1,13 @@
-
-
-#strip the extension number of gene id
-strip.gene.id<-function(input.gene.ids){
-	unlist(lapply(input.gene.ids, function(gene.id) unlist(strsplit(gene.id,split="\\."))[1]))
-}
-
-
 # this function aligns multiple expression matrices, stored as a list of matrices
 align.exp.df<-function(exp.df.list, df.names=NULL){
 	
-	gene.id.list<-lapply(exp.df.list,function(exp.df)(rownames(exp.df)))
-	
+	gene.id.list<-lapply(exp.df.list, colnames)
 	gene.shared<-Reduce(intersect, gene.id.list)
 	
 	gene.id.list.matched <- lapply(1: length(exp.df.list), function(idx){
 		exp.df <- exp.df.list[[idx]]
 		gene.id <- gene.id.list[[idx]]
-		exp.df[match(gene.shared, gene.id),,drop=F]
+		exp.df[,match(gene.shared, gene.id),drop=F]
 	}  )
 	
 	if(!is.null(df.names)) {
@@ -25,78 +16,81 @@ align.exp.df<-function(exp.df.list, df.names=NULL){
 	} 
 	
 	gene.id.list.matched
-	
 }
 
 
-
 #sum up read count over the same cell type / patient
-collpase.exp.df<-function(exp.df, sample.type.vec){
+collapse.exp.df<-function(exp.df, sample.type.vec){
 	
 	sample.type.uniq <-unique(sample.type.vec)
 	
-	exp.df.collapsed<-do.call(cbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[, sample.type.vec ==sample.type,drop=F],1,sum)  ))
+	exp.df.collapsed<-do.call(rbind,lapply(sample.type.uniq,function(sample.type) apply(exp.df[sample.type.vec ==sample.type, ,drop=F],2,sum)  ))
 	
-	colnames(exp.df.collapsed)<-sample.type.uniq
+	rownames(exp.df.collapsed)<-sample.type.uniq
 	
 	exp.df.collapsed
 }
 
 
 #normalize expression vec, s.t. it sum up to one, with the lowest one= psudeo.min
-
 norm.to.one<-function(exp.df, psudeo.min=1E-8){
 	
-	apply(exp.df,2,function(vec) {
+	exp.df.norm <-  do.call(rbind, lapply(1:nrow(exp.df),function(row.idx) {
+												vec <- exp.df[row.idx,]
+												count.tot <- sum(vec)
+												gene.num <- length(vec)
+												psuedo.count <- psudeo.min * count.tot / (1- gene.num* psudeo.min)
+												norm<- vec+ psuedo.count
+												norm <- norm/sum(norm)
+												norm[vec==0]<-psudeo.min
+												norm
+	} )) 
+
+	rownames(exp.df.norm) <- rownames(exp.df)
+	colnames(exp.df.norm) <- colnames(exp.df)
+	exp.df.norm
+}
+
+
+process_GEP <- function (ref, mixture, psudeo.min, cell.type.labels){
+	
+	aligned.dat <- align.exp.df(exp.df.list=list(ref,mixture), df.names=NULL)
+	
+	#this is over subtypes (no need to collapse)
+	ref.matched <- aligned.dat[[1]]
+	mixture.matched <- aligned.dat[[2]]
+	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
+
+	#collapse over cell types
+	prior.matched <- collapse.exp.df(exp.df= ref.matched, sample.type.vec= cell.type.labels)
+	prior.matched.norm <- norm.to.one(exp.df= prior.matched, psudeo.min= psudeo.min)
+	
+	return(list(ref.matched.norm= ref.matched.norm,
+				prior.matched.norm = prior.matched.norm,
+				mixture.matched= mixture.matched))
+}
+
+
+process_scRNA <- function (ref, mixture, psudeo.min, cell.type.labels, cell.subtype.labels){
+	
+	#collapse over subtypes to get reference profile
+	ref.collapsed <- collapse.exp.df(exp.df=ref, sample.type.vec= cell.subtype.labels)
+	
+	#collapse over cell types to get prior profiles
+	prior.collapsed <- collapse.exp.df(exp.df=ref, sample.type.vec= cell.type.labels)
+	
+	aligned.dat <- align.exp.df(exp.df.list=list(ref.collapsed, prior.collapsed, mixture), df.names=NULL)
+	
+	ref.matched <- aligned.dat[[1]]
+	prior.matched <- aligned.dat[[2]]
+	mixture.matched <- aligned.dat[[3]]
+	
+	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
+	prior.matched.norm <- norm.to.one(exp.df= prior.matched, psudeo.min= psudeo.min)
 		
-		count.tot <- sum(vec)
-		gene.num <- length(vec)
-		psuedo.count <- psudeo.min * count.tot / (1- gene.num* psudeo.min)
-		norm<- vec+ psuedo.count
-		norm <- norm/sum(norm)
-		norm[vec==0]<-psudeo.min
-		norm
-	} ) 
-
-}
-
-
-
-
-process_GEP <- function (ref, mixture, psudeo.min){
-	
-#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
-	
-	aligned.dat <- align.exp.df(exp.df.list=list(t(ref),t(mixture)), df.names=NULL)
-	
-	ref.matched <- aligned.dat[[1]]
-	mixture.matched <- aligned.dat[[2]]
-	
-	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
-	
-	return(list(ref.matched.norm= t(ref.matched.norm),
-				mixture.matched= t(mixture.matched)))
-}
-
-
-
-process_scRNA <- function (ref, mixture, psudeo.min, pheno.labels){
-	
-#	if( prod(grepl("\\.",colnames(ref))) ) colnames(ref) <- strip.gene.id(colnames(ref))
-#	if( prod(grepl("\\.",colnames(mixture))) ) colnames(mixture) <- strip.gene.id(colnames(mixture))
-	
-	ref.collpased <- collpase.exp.df(exp.df=t(ref), sample.type.vec= pheno.labels)
-	
-	aligned.dat <- align.exp.df(exp.df.list=list(ref.collpased,t(mixture)), df.names=NULL)
-	
-	ref.matched <- aligned.dat[[1]]
-	mixture.matched <- aligned.dat[[2]]
-	
-	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
-	
-	return(list(ref.matched.norm= t(ref.matched.norm),
-				mixture.matched= t(mixture.matched)))
+	return(list(ref.matched.norm= ref.matched.norm,
+				prior.matched.norm = prior.matched.norm,
+				mixture.matched= mixture.matched))
 }
 
 

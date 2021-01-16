@@ -114,7 +114,11 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 	 rownames(Zkg) <- rownames(phi.hat)
 	 colnames(Zkg) <- colnames(phi.hat)
 	 
-	 Znkg <- array(NA,c(N, K.tot, G))
+	 Znkg <- array(NA,
+	 			   dim=c(N, K.tot, G),
+	 			   dimnames = list(rownames(X), 
+	 			                   rownames(phi.hat),
+	 			                   colnames(phi.hat)))
 	 
 	 const<-0
 	 
