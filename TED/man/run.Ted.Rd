@@ -27,7 +27,7 @@ run.Ted(ref.dat,
       first.gibbs.only=F)
 }
 \arguments{
-  \item{ref.dat}{a matrix containing the raw count of scRNA-seq OR collpased gene expression profile scRNA-seq. Each row is a cell type; each column is a gene. rownames of ref.dat are cell IDs; colnames of ref.dat are gene IDs.}
+  \item{ref.dat}{a matrix containing the raw count of scRNA-seq OR collpased gene expression profile scRNA-seq. Each row is a cell (input.type="scRNA") or a cell type (input.type="GEP"); each column is a gene. rownames of ref.dat are cell IDs (input.type="scRNA") or cell type names(input.type="GEP"); colnames of ref.dat are gene IDs.}
   \item{X}{matrix for the bulk RNA-seq profile. Each row is a sample; each column is a gene. rownames of X are sample IDs of mixtures; colnames of X are gene IDs. Note that run.TED will only use the shared genes between ref.dat and X.}
   \item{cell.type.labels}{vector indicating the cell type of each row of the raw count matrix of scRNA-seq or gene expression profile (GEP). The length has to be equal to nrow(ref.dat)}
   \item{cell.subtype.labels}{vector indicating the cell subtype of each row of the raw count matrix of scRNA-seq or gene expression profile (GEP). The length needs be equal to nrow(ref.dat). Default is NULL, which uses the same value of cell.type.labels. Note that TED computes the posterior sum over the subtypes to get the total fraction / expression of each cell type. This allows a more fine-grained definition of cell types / cell states.}
