@@ -1,3 +1,47 @@
+#remove genes with large technical batch effects (ribosomal, mitochondrial, or on sex chromosomes)
+#genes curated from seqC, 10x, and gencode annotations
+#only mouse and human genes are curated
+#for users' convenience, I use human genocodeV22 for compatibility with TCGA
+cleanup.genes <- function (ref.dat, species, gene.type, exp.cells =1){
+	stopifnot(species %in% c("hs","mm"))
+	stopifnot(prod(gene.type %in% c("RB","chrX","chrY","chrM"))==1)
+	
+	#load gene list
+	if(species=="hs") gene.list <- read.table(system.file("extdata", "genelist.hs.txt", package="TED"),sep="\t",header=F,stringsAsFactors=F)
+	if(species=="mm") gene.list <- read.table(system.file("extdata", "genelist.mm.txt", package="TED"),sep="\t",header=F,stringsAsFactors=F)
+	
+	gene.list <- gene.list[gene.list[,1] %in% gene.type,]
+	
+	#detect if EMSEMBLE ID (starts with ENS) or gene symbol is used
+	if( sum(substr(colnames(ref.dat),1,3)=="ENS")> ncol(ref.dat)*0.8  ){
+		# use 80% of colnames to avoid sometimes there are manually added gene name such as GFP-XXX.
+		#use EMSEMBLE ID
+		#strip the "." from ENSXXX.X
+		print("EMSEMBLE IDs detected. Cleaning up genes based on EMSEMBLE IDs.")
+		gene.ids <- unlist(lapply(colnames(ref.dat), function(gene.id) unlist(strsplit(gene.id,split="\\."))[1]))
+		exclude.idx <- gene.ids %in% gene.list[,2]
+	}
+	else{
+		#use gene symbols
+		print("Gene symbols detected. Cleaning up genes based on gene symbols. Recommend to use EMSEMBLE IDs for more unique mapping.")
+		exclude.idx <- colnames(ref.dat) %in% c(gene.list[,3],toupper(gene.list[,3]))
+	}
+
+	cat("A total of ", sum(exclude.idx)," genes from", gene.type, " have been excluded","\n")
+	ref.dat.filtered <- ref.dat[, ! exclude.idx] 
+	
+	if(exp.cells>0) {
+		exclude.lowexp.idx <- apply(ref.dat.filtered>0,2,sum)>= exp.cells
+		cat("A total of ", sum(!exclude.lowexp.idx)," lowly expressed genes have been excluded","\n")
+		ref.dat.filtered <- ref.dat.filtered[, exclude.lowexp.idx]
+	}
+	else{
+		cat("A total of 0 lowly expressed genes have been excluded","\n")
+	}
+	ref.dat.filtered
+}
+
+
 # this function aligns multiple expression matrices, stored as a list of matrices
 align.exp.df<-function(exp.df.list, df.names=NULL){
 	

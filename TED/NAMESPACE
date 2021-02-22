@@ -3,6 +3,7 @@ import(parallel)
 import(MCMCpack)
 import(gplots)
 
+export(cleanup.genes)
 export(run.Ted)
 export(learn.embedding.withPhiTum)
 export(learn.embedding.Kcls)

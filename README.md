@@ -7,6 +7,8 @@ BayesPrism is comprised of the deconvolution modules and the embedding learning 
 
 v1.1: added new features that allow the use of the cell subtypes / cell states information obtained from scRNA-seq data (e.g. by finer-level clustering), which yields finer-grained cell types to better represent a heterogeneous population. It can be used to define, for example, myeloid or lymphocyte populations in the tumor microenvironment. BayesPrism will compute the posterior sum over these subtypes/states.
 
+v1.2: added function cleanup.genes that helps clean up genes sensitive to batch effects, including 1) ribosomal genes, 2) mitochondrial genes, and 3) genes in chrM and chrY. Developed for mouse and human annotations. 
+
 Cite BayesPrism:
 --------
 Bayesian cell-type deconvolution and gene expression inference reveals tumor-microenvironment interactions
