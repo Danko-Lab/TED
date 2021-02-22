@@ -51,7 +51,7 @@ library(TED)
 use ?function_name for more details
 
 utility function:
-norm.to.one
+cleanup.genes
 
 R functions:
 run.Ted, learn.embedding.withPhiTum, learn.embedding.Kcls
