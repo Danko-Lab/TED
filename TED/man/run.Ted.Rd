@@ -22,7 +22,6 @@ run.Ted(ref.dat,
       opt.control=list(trace=0, maxit= 100000),
       file.name=NULL, 
       n.cores=1,
-      sig.gene=NULL,
       pdf.name=NULL,
       first.gibbs.only=F)
 }
@@ -42,7 +41,6 @@ run.Ted(ref.dat,
   \item{opt.control}{A list of parameters controling the optimization by Rcgmin, Default trace=0, maxit= 100000. }
   \item{file.name}{A file name if wants to write log to files. Default=NULL (print to scree). }
   \item{ncores}{Number indicating CPU cores in parallel computing. Default=1}
-  \item{sig.gene}{A character vector indicating the names of the genes to be used for deconvolution. Default=NULL (use all genes). }
   \item{pdf.name}{The name of the pdf file containing the correlation heatmap of tumor gene expression to be ploted. Default=NULL (do not plot).}
   \item{first.gibbs.only}{A logical parameter denoting if to only run the first gibbs sampling, i.e. the initial estimates of theta and Z. Default: FALSE}
 }

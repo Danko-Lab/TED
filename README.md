@@ -9,6 +9,8 @@ v1.1: added new features that allow the use of the cell subtypes / cell states i
 
 v1.2: added function cleanup.genes that helps clean up genes sensitive to batch effects, including 1) ribosomal genes, 2) mitochondrial genes, and 3) genes in chrM and chrY. Developed for mouse and human annotations. 
 
+v1.3: added function get.signature.genes that uses hierarchical clustering to get signature genes. Subsetting on sigature genes is helpful when batch effects are severe while reference cell types are similar in gene expression profiles. (help function to be added soon)
+
 Cite BayesPrism:
 --------
 Bayesian cell-type deconvolution and gene expression inference reveals tumor-microenvironment interactions
@@ -31,7 +33,7 @@ Requires
 
 * R packages:
 	
-	DESeq2(>1.22.2), MCMCpack(> 1.4-4), parallel, gplots
+	DESeq2(>1.22.2), MCMCpack(> 1.4-4), parallel, gplots, scran, BiocParallel
 	
 Installation
 --------
@@ -51,7 +53,7 @@ library(TED)
 use ?function_name for more details
 
 utility function:
-cleanup.genes
+cleanup.genes, get.signature.genes
 
 R functions:
 run.Ted, learn.embedding.withPhiTum, learn.embedding.Kcls

@@ -233,7 +233,6 @@ run.Ted <- function(ref.dat,
 				gibbs.control=list(chain.length=400,burn.in=200,thinning=2),
 				opt.control=list(trace=0, maxit= 10000),
 				n.cores=1,
-				sig.gene=NULL,
 				pdf.name=NULL,
 				first.gibbs.only=F){
 				    	
@@ -264,9 +263,7 @@ run.Ted <- function(ref.dat,
 	X<- X[, filter.idx, drop=F]
 	num.genes.filtered <- sum(! filter.idx)
 	cat("Number of outlier genes filtered=", num.genes.filtered,"\n")
-	
-	if(!is.null(sig.gene)) ref.dat <- ref.dat[,colnames(ref.dat) %in% sig.gene] 
-	
+		
 	if(! input.type %in% c("scRNA","GEP")) stop("Error: please specify the correct input.type!")
 	print("aligning reference and mixture...")
 	
