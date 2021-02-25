@@ -132,6 +132,7 @@ run.Ted.main <- function(input.phi,
 						  gibbs.control,
 						  opt.control,
 						  n.cores,
+						  n.cores.2g,
 						  first.gibbs.only){
 
 	thinned.idx <- get.gibbs.idx (chain.length = gibbs.control$chain.length, 
@@ -155,7 +156,7 @@ run.Ted.main <- function(input.phi,
 					  			  type.to.subtype.mapping = type.to.subtype.mapping,
 					  			  alpha= alpha,
 					  			  thinned.idx = thinned.idx,
-					  			  n.cores)
+					  			  n.cores= n.cores)
 		
 	if(first.gibbs.only) return(list(para= para, res= list(first.gibbs.res= first.gibbs.res)))
 	
@@ -168,7 +169,7 @@ run.Ted.main <- function(input.phi,
 					   			Zkg = Zkg,
 					   			prior.mat = env.prior.mat,
 					   			opt.control = opt.control,
-					   			n.cores = n.cores)			   			
+					   			n.cores = n.cores.2g)			   			
 	phi.env.batch.corrected <- transform.phi.mat(input.phi = input.phi.prior, log.fold = batch.opt.res $opt.psi)
 
 	print("run final sampling")
@@ -181,7 +182,7 @@ run.Ted.main <- function(input.phi,
 				   								 X=X,
 				   								 alpha=1, 
 				   								 thinned.idx = thinned.idx,
-				   								 n.cores= n.cores)
+				   								 n.cores= n.cores.2g)
 	
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
@@ -198,7 +199,7 @@ run.Ted.main <- function(input.phi,
 					  			       type.to.subtype.mapping = NULL,
 					  			       alpha= alpha,
 					  			       thinned.idx = thinned.idx,
-					  			       n.cores) $gibbs.theta
+					  			       n.cores = n.cores.2g) $gibbs.theta
 		
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
@@ -233,6 +234,7 @@ run.Ted <- function(ref.dat,
 				gibbs.control=list(chain.length=400,burn.in=200,thinning=2),
 				opt.control=list(trace=0, maxit= 10000),
 				n.cores=1,
+				n.cores.2g=NULL,
 				pdf.name=NULL,
 				first.gibbs.only=F){
 				    	
@@ -241,7 +243,8 @@ run.Ted <- function(ref.dat,
 	if( is.null(colnames(X))) stop("Error: please specify the gene names of X!")
 	if (is.null(cell.type.labels)) stop("Error: please specify the cell.types.labels!")
 	if (nrow(ref.dat) != length(cell.type.labels)) stop("Error: nrow(ref.dat) and length(cell.type.labels) need to be the same!")
-
+	if(is.null(n.cores.2g)) n.cores.2g <- n.cores
+	
 	#check cell.type.labels and cell.subtype.labels
 	if(is.null(cell.subtype.labels)) cell.subtype.labels <- cell.type.labels
 	
@@ -306,7 +309,8 @@ run.Ted <- function(ref.dat,
 			 	  sigma=sigma,
 			 	  gibbs.control= gibbs.control,
 			 	  opt.control= opt.control,
-			 	  n.cores= n.cores,			 	  
+			 	  n.cores= n.cores,
+			 	  n.cores.2g=n.cores.2g,			 	  
 			 	  first.gibbs.only= first.gibbs.only)
 
 	#perform vst transformation and make heatmap for tumor 

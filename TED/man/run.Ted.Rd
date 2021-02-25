@@ -22,6 +22,7 @@ run.Ted(ref.dat,
       opt.control=list(trace=0, maxit= 100000),
       file.name=NULL, 
       n.cores=1,
+      n.cores.2g=NULL,
       pdf.name=NULL,
       first.gibbs.only=F)
 }
@@ -40,7 +41,8 @@ run.Ted(ref.dat,
   \item{gibbs.control}{A list of parameters controling the Gibbs sampling. Default chain.length=400, burn.in=200, thinning=2. To devonvolve spatial transcriptomics which usually has lower depth than conventional bulk data, can set higher chain.length to better reach stationary distribution, e.g. chain.length=1000, burn.in=500, thinning=2.}
   \item{opt.control}{A list of parameters controling the optimization by Rcgmin, Default trace=0, maxit= 100000. }
   \item{file.name}{A file name if wants to write log to files. Default=NULL (print to scree). }
-  \item{ncores}{Number indicating CPU cores in parallel computing. Default=1}
+  \item{ncores}{Number of CPU threads used for parallel computing. Default=1}
+  \item{n.cores.2g}{Number of CPU threads used for parallel computing for the final Gibbs sampling. Default=NULL (same as ncores). Recommended to set to a number smaller than n.cores, if deconvolving large number of mixtures, such as Visium data, or the number of cell types is large, to avoid memory overflow.}
   \item{pdf.name}{The name of the pdf file containing the correlation heatmap of tumor gene expression to be ploted. Default=NULL (do not plot).}
   \item{first.gibbs.only}{A logical parameter denoting if to only run the first gibbs sampling, i.e. the initial estimates of theta and Z. Default: FALSE}
 }
