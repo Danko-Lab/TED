@@ -141,7 +141,14 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 
 
 
-draw.sample.gibbs.individualPhi <-function(theta.ini, phi.tum, phi.hat.env, X, alpha, thinned.idx, n.cores){
+draw.sample.gibbs.individualPhi <-function(theta.ini, 
+										   phi.tum, 
+										   phi.hat.env, 
+										   X, 
+										   alpha, 
+										   tum.key, 
+										   thinned.idx, 
+										   n.cores){
 	
 	N <- nrow(X)
 	K.tot <-  nrow(phi.hat.env) +1 
@@ -160,7 +167,7 @@ draw.sample.gibbs.individualPhi <-function(theta.ini, phi.tum, phi.hat.env, X, a
 	  							   					 
 	 gibbs.theta <- array(NA,c(N, K.tot))
 	 rownames(gibbs.theta) <- rownames(X)
-	 colnames(gibbs.theta) <- c("Tumor", rownames(phi.hat.env))
+	 colnames(gibbs.theta) <- c(tum.key, rownames(phi.hat.env))
 	 	 
 	 for (n in 1:N) gibbs.theta[n,] <- Zkg.theta[[n]]$gibbs.theta.i
 

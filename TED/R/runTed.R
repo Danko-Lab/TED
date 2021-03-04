@@ -97,6 +97,7 @@ run.gibbs.individualPhi <- function( phi.tum,
 									 phi.hat.env,
 									 X,
 									 alpha,
+									 tum.key= tum.key,
 									 thinned.idx,
 									 n.cores=40,
 									 theta.ini=NULL){
@@ -116,6 +117,7 @@ run.gibbs.individualPhi <- function( phi.tum,
 				  			 		phi.hat.env = phi.hat.env,
 				  			 		X=X, 
 				  			 		alpha= alpha,
+				  			 		tum.key= tum.key,
 				  			 		thinned.idx= thinned.idx,
 				  			 		n.cores= n.cores)		
 	return(theta.final)
@@ -180,7 +182,8 @@ run.Ted.main <- function(input.phi,
 		final.gibbs.theta <- run.gibbs.individualPhi ( phi.tum = Zkg.tum.norm, 
 												 phi.hat.env= phi.env.batch.corrected, 
 				   								 X=X,
-				   								 alpha=1, 
+				   								 alpha=1,
+				   								 tum.key= tum.key, 
 				   								 thinned.idx = thinned.idx,
 				   								 n.cores= n.cores.2g)
 	
