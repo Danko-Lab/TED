@@ -11,6 +11,8 @@ v1.2: added function cleanup.genes that helps clean up genes sensitive to batch 
 
 v1.3: added function get.signature.genes that uses hierarchical clustering to get signature genes. Subsetting on signature genes is helpful when batch effects are severe while reference cell types are similar in gene expression profiles. (help function to be added soon)
 
+v2.0: added two new functions estimate_sf and convert.cell.fraction (vignette and help function to be added soon), and updated a new tutorial example with both raw scRNA data and GEP and vignette. These two new functions convert fraction of reads of each cell type (from the run.Ted output) to the fraction of number of cells. Users are recommended to stick to the original fraction of reads of each cell type (the original run.Ted output) as it is more accurate and also sufficient for most applications. 
+
 Cite BayesPrism:
 --------
 Bayesian cell-type deconvolution and gene expression inference reveals tumor-microenvironment interactions

@@ -2,9 +2,20 @@
 #genes curated from seqC, 10x, and gencode annotations
 #only mouse and human genes are curated
 #for users' convenience, I use human genocodeV22 for compatibility with TCGA
-cleanup.genes <- function (ref.dat, species, gene.type, exp.cells =1){
+cleanup.genes <- function (ref.dat, 
+						   species, 
+						   gene.type,
+						   input.type, 
+						   exp.cells =1){
+	
 	stopifnot(species %in% c("hs","mm"))
 	stopifnot(prod(gene.type %in% c("RB","chrX","chrY","chrM"))==1)
+	
+	if(! input.type %in% c("scRNA","GEP")) stop("Error: please specify the correct input.type!")
+	if(input.type=="GEP"){
+		exp.cells <- min(exp.cells,1)
+		print("As the input is a collpased GEP, exp.cells is set to min(exp.cells,1)")
+	}
 	
 	#load gene list
 	if(species=="hs") gene.list <- read.table(system.file("extdata", "genelist.hs.txt", package="TED"),sep="\t",header=F,stringsAsFactors=F)

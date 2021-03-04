@@ -17,13 +17,18 @@ Utility function to remove highly expressed outlier genes that are sensitive to 
 
 }
 \usage{
-cleanup.genes(ref.dat, species=c("mm","hs"), gene.type=c("RB","chrM","chrX","chrY"), exp.cells=1)
+cleanup.genes(ref.dat, 
+              species=c("mm","hs"), 
+              gene.type=c("RB","chrM","chrX","chrY"), 
+              input.type=c("scRNA","GEP"), 
+              exp.cells=1)
 }
 \arguments{
   \item{ref.dat}{a matrix containing the raw count of scRNA-seq OR collpased gene expression profile scRNA-seq. Each row is a cell or a cell type; each column is a gene. rownames of ref.dat are cell IDs or cell type names; colnames of ref.dat are gene IDs/names.}
   \item{species}{a character string denoting whether sample is mouse ("mm") or human ("hs").}
   \item{gene.type}{a character vector denoting the category(s) of genes to be removed. "RB"=ribosomal genes; "chrM"=mitochondrial genes; "chrX" and "chrY" denoting genes on the sex chromosome. see description for details.}
-  \item{exp.cells}{a numeric variable denoting to keep genes with the minimum number of cells that show non-zero expression. Default=1, meaning to exclude genes has zero expression across all cells. A range to choose is typically from 1-10, depending on the number of cells in each cluster. Excluding lowly expressed genes will also speed up deconvolution.}
+  \item{input.type}{A character string. ="scRNA" if using the raw count matrix of scRNA-seq as input; ="GEP" if using a collpased gene expression profile, preferably summed raw count(un-normalized), as input. If ="GEP", exp.cells is set to min(exp.cells,1). }
+  \item{exp.cells}{a numeric variable denoting to keep genes with the minimum number of cells (input.type="scRNA") or cell types (input.type="GEP") that show non-zero expression. Default=1, meaning to exclude genes has zero expression across all cells. A typical range is 1 to 10, depending on the number of cells in each cluster. Excluding lowly expressed genes will also speed up deconvolution.}
   }
 \details{
 }

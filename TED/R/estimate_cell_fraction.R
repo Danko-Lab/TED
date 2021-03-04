@@ -192,11 +192,19 @@ convert.cell.fraction <- function(ted.obj,
 	final.gibbs.theta <- ted.obj$res$final.gibbs.theta
 	
 	first.gibbs.cell.fraction <- convert.theta.mat (first.gibbs.theta,cell.sf)
-	final.gibbs.cell.fraction <- convert.theta.mat (final.gibbs.theta,cell.sf)
-
+	print("first.gibbs.cell.fraction:")
+	percentage.tab<-apply(first.gibbs.cell.fraction,2,summary)	
+	print(round(percentage.tab,3))
 	ted.obj$res$first.gibbs.res$first.gibbs.cell.fraction <- first.gibbs.cell.fraction
-	ted.obj$res$final.gibbs.cell.fraction <- final.gibbs.cell.fraction
-	
+
+	if(!is.null(final.gibbs.theta)){
+		final.gibbs.cell.fraction <- convert.theta.mat (final.gibbs.theta,cell.sf)
+		print("final.gibbs.cell.fraction:")
+		percentage.tab<-apply(final.gibbs.cell.fraction,2,summary)	
+		print(round(percentage.tab,3))
+		ted.obj$res$final.gibbs.cell.fraction <- final.gibbs.cell.fraction
+	}
+		
 	ted.obj
 }
 								  
