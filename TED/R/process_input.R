@@ -6,10 +6,12 @@ cleanup.genes <- function (ref.dat,
 						   species, 
 						   gene.type,
 						   input.type, 
-						   exp.cells =1){
+						   exp.cells =1,
+						   if.toupper=F){
 	
 	stopifnot(species %in% c("hs","mm"))
 	stopifnot(prod(gene.type %in% c("RB","chrX","chrY","chrM"))==1)
+	stopifnot(is.logical(if.toupper))
 	
 	if(! input.type %in% c("scRNA","GEP")) stop("Error: please specify the correct input.type!")
 	if(input.type=="GEP"){
@@ -35,7 +37,8 @@ cleanup.genes <- function (ref.dat,
 	else{
 		#use gene symbols
 		print("Gene symbols detected. Cleaning up genes based on gene symbols. Recommend to use EMSEMBLE IDs for more unique mapping.")
-		exclude.idx <- colnames(ref.dat) %in% c(gene.list[,3],toupper(gene.list[,3]))
+		if(if.toupper) gene.list[,3] <- toupper(gene.list[,3])
+		exclude.idx <- colnames(ref.dat) %in% gene.list[,3]
 	}
 
 	cat("A total of ", sum(exclude.idx)," genes from", gene.type, " have been excluded","\n")

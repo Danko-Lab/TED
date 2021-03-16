@@ -141,17 +141,6 @@ run.Ted.main <- function(input.phi,
 								  burn.in = gibbs.control$burn.in, 
 								  thinning = gibbs.control$thinning)
 	
-	para <- list(X=X,
-				 input.phi= input.phi,
-				 input.phi.prior= input.phi.prior,
-				 tum.key = tum.key,
-				 type.to.subtype.mapping = type.to.subtype.mapping, 
-				 alpha= alpha,
-				 sigma= sigma,
-				 gibbs.control= gibbs.control,
-				 opt.control= opt.control,
-				 n.cores= n.cores)
-	
 	print("run first sampling")
 	first.gibbs.res <- run.gibbs (input.phi= input.phi, 
 					  			  X=X,
@@ -160,7 +149,7 @@ run.Ted.main <- function(input.phi,
 					  			  thinned.idx = thinned.idx,
 					  			  n.cores= n.cores)
 		
-	if(first.gibbs.only) return(list(para= para, res= list(first.gibbs.res= first.gibbs.res)))
+	if(first.gibbs.only) return(list(res= list(first.gibbs.res= first.gibbs.res)))
 	
 	print("pooling information across samples")
 	env.prior.num <- -1 / (2* sigma ^2)
@@ -211,7 +200,7 @@ run.Ted.main <- function(input.phi,
 					phi.env= phi.env.batch.corrected,
 					final.gibbs.theta = final.gibbs.theta)		
 	}
-	return(list(para= para, res= res))	
+	return(list(res= res))	
 }
 
 
@@ -315,6 +304,20 @@ run.Ted <- function(ref.dat,
 			 	  n.cores= n.cores,
 			 	  n.cores.2g=n.cores.2g,			 	  
 			 	  first.gibbs.only= first.gibbs.only)
+
+	para <- list(X=X,
+				 input.phi= processed.dat$ref.matched.norm,
+				 input.phi.prior= processed.dat$prior.matched.norm,
+				 tum.key = tum.key,
+				 type.to.subtype.mapping = type.to.subtype.mapping, 
+				 alpha= alpha,
+				 sigma= sigma,
+				 psudeo.min= psudeo.min,
+				 gibbs.control= gibbs.control,
+				 opt.control= opt.control,
+				 n.cores= n.cores)
+	
+	ted.res$para <- para
 
 	#perform vst transformation and make heatmap for tumor 
 	if(!is.null(tum.key)){
