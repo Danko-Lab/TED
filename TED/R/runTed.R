@@ -305,7 +305,7 @@ run.Ted <- function(ref.dat,
 			 	  n.cores.2g=n.cores.2g,			 	  
 			 	  first.gibbs.only= first.gibbs.only)
 
-	para <- list(X=X,
+	para <- list(X=processed.dat$mixture.matched,
 				 input.phi= processed.dat$ref.matched.norm,
 				 input.phi.prior= processed.dat$prior.matched.norm,
 				 tum.key = tum.key,
