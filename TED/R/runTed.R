@@ -257,8 +257,7 @@ run.Ted <- function(ref.dat,
 	X.norm <- apply(X,1,function(vec)vec/sum(vec))
 	filter.idx <- apply(X.norm > outlier.cut,1,sum) / ncol(X.norm) > outlier.fraction
 	X<- X[, ! filter.idx, drop=F]
-	num.genes.filtered <- sum(! filter.idx)
-	cat("Number of outlier genes filtered=", num.genes.filtered,"\n")
+	cat("Number of outlier genes filtered=", sum(filter.idx),"\n")
 		
 	if(! input.type %in% c("scRNA","GEP")) stop("Error: please specify the correct input.type!")
 	print("aligning reference and mixture...")
