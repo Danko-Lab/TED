@@ -222,7 +222,8 @@ run.Ted <- function(ref.dat,
 				psudeo.min=1E-8, 
 				alpha=1,
 				sigma=2,
-				outlier.cut=0.05,
+				outlier.cut=0.01,
+				outlier.fraction=0.1,
 				gibbs.control=list(chain.length=400,burn.in=200,thinning=2),
 				opt.control=list(trace=0, maxit= 10000),
 				n.cores=1,
@@ -254,8 +255,8 @@ run.Ted <- function(ref.dat,
 	#select features
 	print("removing outlier genes...")
 	X.norm <- apply(X,1,function(vec)vec/sum(vec))
-	filter.idx <- apply(X.norm,1,max)<outlier.cut
-	X<- X[, filter.idx, drop=F]
+	filter.idx <- apply(X.norm > outlier.cut,1,sum) / ncol(X.norm) > outlier.fraction
+	X<- X[, ! filter.idx, drop=F]
 	num.genes.filtered <- sum(! filter.idx)
 	cat("Number of outlier genes filtered=", num.genes.filtered,"\n")
 		
