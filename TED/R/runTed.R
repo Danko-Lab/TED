@@ -148,6 +148,11 @@ run.Ted.main <- function(input.phi,
 					  			  alpha= alpha,
 					  			  thinned.idx = thinned.idx,
 					  			  n.cores= n.cores)
+	
+	if(!is.null(tum.key)){
+		first.gibbs.res$Zkg.tum <- first.gibbs.res$Znkg.merged[, tum.key,]	
+		first.gibbs.res$Zkg.tum.norm <- norm.to.one(first.gibbs.res$Zkg.tum, min(input.phi))
+	}
 		
 	if(first.gibbs.only) return(list(res= list(first.gibbs.res= first.gibbs.res)))
 	
@@ -165,10 +170,7 @@ run.Ted.main <- function(input.phi,
 
 	print("run final sampling")
 	if(!is.null(tum.key)){
-		Zkg.tum <- first.gibbs.res$Znkg.merged[, tum.key,]	
-		Zkg.tum.norm <- norm.to.one(Zkg.tum, min(input.phi))
-			
-		final.gibbs.theta <- run.gibbs.individualPhi ( phi.tum = Zkg.tum.norm, 
+		final.gibbs.theta <- run.gibbs.individualPhi ( phi.tum = first.gibbs.res$Zkg.tum.norm, 
 												 phi.hat.env= phi.env.batch.corrected, 
 				   								 X=X,
 				   								 alpha=1,
@@ -180,8 +182,6 @@ run.Ted.main <- function(input.phi,
 		print(round(percentage.tab,3))
 	
 		res <- list(first.gibbs.res= first.gibbs.res,
-				Z.tum.first.gibbs = Zkg.tum,
-				Zkg.tum.norm = Zkg.tum.norm,
 				phi.env= phi.env.batch.corrected,
 				final.gibbs.theta = final.gibbs.theta)
 	}
@@ -321,7 +321,7 @@ run.Ted <- function(ref.dat,
 
 	#perform vst transformation and make heatmap for tumor 
 	if(!is.null(tum.key)){
-		Zkg.tum <- ted.res$res$Z.tum.first.gibbs
+		Zkg.tum <- ted.res$res$first.gibbs.res$Zkg.tum
 		#whether possible to compute vst transformation on tumor expression
 		#if every gene has at least one zero, vst is not possible, then only export Zkg.tum.norm
 		Zkg.tum.round <- t(round(Zkg.tum))
@@ -340,8 +340,8 @@ run.Ted <- function(ref.dat,
 			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.norm )
 		}
 		
-		ted.res$res$Zkg.tum.vst <- Zkg.tum.vst
-		ted.res$res$cor.mat <- cor.mat
+		ted.res$res$first.gibbs.res$Zkg.tum.vst <- Zkg.tum.vst
+		ted.res$res$first.gibbs.res$cor.mat <- cor.mat
 		
 		if(!is.null(pdf.name) & nrow(Zkg.tum.round)>1) plot.heatmap(dat= cor.mat, pdf.name= pdf.name, cluster=T, self=T, show.value=F, metric="is.cor")
 	}
