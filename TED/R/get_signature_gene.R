@@ -1,7 +1,7 @@
 
 
 #for a given number of clusters, cut the tree and get marker genes between clusters 
-get.signature.genes.cls.num <- function(hc, dat.tmp, pval.cut, topN, cls.num){
+get.signature.genes.cls.num <- function(hc, dat.tmp, pval.cut, topN, cls.num, cell.type.labels){
 	
 	cls <- cutree(hc, cls.num)
 	cell.type.cls.labels <- rep(NA,length(cell.type.labels))
@@ -29,6 +29,7 @@ get.signature.genes.cls.num <- function(hc, dat.tmp, pval.cut, topN, cls.num){
 }
 
 
+#return.cell.type.name a logical variable denoting if return the sigature genes separately for each cell type
 get.signature.genes <- function(ref.dat,
 								cell.type.labels,
 								use.hclust,
@@ -55,7 +56,8 @@ get.signature.genes <- function(ref.dat,
 		
 		sig.gene.ids <- unique(unlist(mclapply(2:ncol(cor.mat),FUN= get.signature.genes.cls.num, 
 												hc= hc, dat.tmp= dat.tmp, 
-												pval.cut = pval.cut, topN= topN, 
+												pval.cut = pval.cut, topN= topN,
+												cell.type.labels= cell.type.labels, 
 												mc.cores=n.cores)))
 	}
 	else{
