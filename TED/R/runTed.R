@@ -337,7 +337,7 @@ run.Ted <- function(ref.dat,
 			if(nrow(Zkg.tum.round)==1) print("only one mixture sample. vst transformation is NOT feasible")
 			else print("every gene has at least one zero. vst transformation is NOT feasible")
 			Zkg.tum.vst <- NULL
-			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.norm )
+			cor.mat <- get.cormat ( Zkg.tum= ted.res$res$first.gibbs.res$Zkg.tum.norm )
 		}
 		
 		ted.res$res$first.gibbs.res$Zkg.tum.vst <- Zkg.tum.vst
