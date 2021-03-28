@@ -149,14 +149,14 @@ run.EM <- function(phi.tum,
 
 
 
-merge.tum.cls <- function(Zkg.tum.norm, cor.mat, K){
+merge.tum.cls <- function(Zkg.tum.norm, cor.mat, K, tum.key){
 	
 	dendrogram<- hclust(dist(cor.mat),method="ward.D2")
 	cls <- cutree(dendrogram,k=K)
 		
 	phi.tum <- do.call(rbind, lapply(1:K, function(k) apply(Zkg.tum.norm[cls==k,,drop=F],2,mean) ))
 	colnames(phi.tum) <- colnames(Zkg.tum.norm)
-	rownames(phi.tum) <- paste("Tumor-", 1:K ,sep="")
+	rownames(phi.tum) <- paste(tum.key, 1:K ,sep="-")
 	phi.tum
 }
 
@@ -174,11 +174,14 @@ learn.embedding.withPhiTum <- function(ted.res,
 							print.accuracy=F,
 							compute.posterior=F){
 	
-	Zkg.tum.norm <- ted.res$res$Zkg.tum.norm
+	Zkg.tum.norm <- ted.res$res$first.gibbs.res$Zkg.tum.norm
 	phi.env <- ted.res$res$phi.env
 	theta.merged <- ted.res $res$ final.gibbs.theta
+	X.tum <- ted.res$res$first.gibbs.res$Zkg.tum
 	
 	X <- ted.res$para$X
+	tum.key <- ted.res$para$tum.key
+	psudeo.min <- ted.res$para$psudeo.min
 	
 	if(is.null(alpha)) alpha <- ted.res$para$alpha 
 	if(is.null(sigma)) sigma <- ted.res$para$sigma
@@ -190,14 +193,16 @@ learn.embedding.withPhiTum <- function(ted.res,
 								  burn.in = gibbs.control$burn.in, 
 								  thinning = gibbs.control$thinning)
 	
-		
-	current.K <- nrow(phi.tum)	
+	
+	phi.tum.norm	 <- norm.to.one ( phi.tum ,psudeo.min= psudeo.min)
+	current.K <- nrow(phi.tum.norm)	
 	
 	cat("K=", current.K ,"\n")
 				
-	theta.ini<- cbind(do.call(cbind,lapply(1: current.K, function(k) theta.merged[,"Tumor"] / current.K)), theta.merged[,-1])
+	theta.ini<- cbind(do.call(cbind,lapply(1: current.K, function(k) theta.merged[,tum.key] / current.K)), 
+									theta.merged[,-which(colnames(theta.merged)== tum.key)])
 			
-	embed.EM.res <- run.EM(phi.tum = phi.tum, 
+	embed.EM.res <- run.EM(phi.tum = phi.tum.norm, 
 								   phi.env = phi.env,
 								   X=X,
 								   alpha= alpha,
@@ -207,7 +212,7 @@ learn.embedding.withPhiTum <- function(ted.res,
 								   n.cores= n.cores,
 								   EM.maxit= EM.maxit,
 								   theta.ini= theta.ini,
-								   X.tum= t(Zkg.tum.norm),
+								   X.tum= X.tum,
 								   print.accuracy= print.accuracy,
 								   compute.posterior= compute.posterior)
 				
@@ -232,11 +237,14 @@ learn.embedding.Kcls <- function(ted.res,
 							print.accuracy=F,
 							compute.posterior=F){
 	
-	Zkg.tum.norm <- ted.res$res$Zkg.tum.norm
+	Zkg.tum.norm <- ted.res$res$first.gibbs.res$Zkg.tum.norm
 	phi.env <- ted.res$res$phi.env
 	theta.merged <- ted.res $res$ final.gibbs.theta
+	X.tum <- ted.res$res$first.gibbs.res$Zkg.tum
 	
 	X <- ted.res$para$X
+	tum.key <- ted.res$para$tum.key
+	psudeo.min <- ted.res$para$psudeo.min
 	
 	if(is.null(alpha)) alpha <- ted.res$para$alpha 
 	if(is.null(sigma)) sigma <- ted.res$para$sigma
@@ -253,11 +261,12 @@ learn.embedding.Kcls <- function(ted.res,
 	
 	for(current.K in K.vec){
 			cat("current.K=", current.K ,"\n")
-			phi.tum <- merge.tum.cls (Zkg.tum.norm, cor.mat= ted.res$res$cor.mat, current.K)
+			phi.tum.norm <- merge.tum.cls (Zkg.tum.norm, cor.mat= ted.res$res$first.gibbs.res$cor.mat, current.K, tum.key= tum.key)
 				
-			theta.ini<- cbind(do.call(cbind,lapply(1: current.K, function(k) theta.merged[,"Tumor"] / current.K)), theta.merged[,-1])
+			theta.ini<- cbind(do.call(cbind,lapply(1: current.K, function(k) theta.merged[,tum.key] / current.K)), 
+									theta.merged[,-which(colnames(theta.merged)== tum.key)])
 			
-			embed.EM.res <- run.EM(phi.tum = phi.tum, 
+			embed.EM.res <- run.EM(phi.tum = phi.tum.norm, 
 								   phi.env = phi.env,
 								   X=X,
 								   alpha= alpha,
@@ -267,7 +276,7 @@ learn.embedding.Kcls <- function(ted.res,
 								   n.cores= n.cores,
 								   EM.maxit= EM.maxit,
 								   theta.ini= theta.ini,
-								   X.tum= t(Zkg.tum.norm),
+								   X.tum= X.tum,
 								   print.accuracy= print.accuracy,
 								   compute.posterior= compute.posterior)
 			

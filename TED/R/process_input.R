@@ -77,8 +77,14 @@ align.exp.df<-function(exp.df.list, df.names=NULL){
 }
 
 
-#sum up read count over the same cell type / patient
+#sum up read count over the same cell (sub)type
 collapse.exp.df<-function(exp.df, sample.type.vec){
+	
+	#remove NA in sample.type.vec
+	non.na.idx <- !is.na(sample.type.vec)
+	if(sum(non.na.idx)>0) print("Warning: NA found in the cell (sub)type labels. These cells will be excluded!")
+	sample.type.vec <- sample.type.vec[non.na.idx]
+	exp.df <- exp.df[non.na.idx,]
 	
 	sample.type.uniq <-unique(sample.type.vec)
 	
