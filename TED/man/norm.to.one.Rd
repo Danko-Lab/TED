@@ -1,4 +1,4 @@
-\name{norm.to.one}
+pseudo\name{norm.to.one}
 \alias{norm.to.one}
 \title{
 Utility function to prepare the input.phi
@@ -8,11 +8,11 @@ Utility function to prepare the input.phi
 Normalize the scRNA-seq reference matrix such that the sum of expression of each cell type=1, while the min of expression = the specified small number.
 }
 \usage{
-norm.to.one (exp.df, psudeo.min=1E-8)
+norm.to.one (exp.df, pseudo.min=1E-8)
 }
 \arguments{
   \item{exp.df}{matrix for the raw expression profiles of scRNA-seq. Each column is a cell type; each row is a gene.}
-  \item{psudeo.min}{The desired minimum value after normalization.}
+  \item{pseudo.min}{The desired minimum value after normalization.}
 }
 \details{
 }

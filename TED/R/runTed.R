@@ -219,7 +219,7 @@ run.Ted <- function(ref.dat,
 				cell.subtype.labels=NULL,
 				tum.key=NULL,
 				input.type,
-				psudeo.min=1E-8, 
+				pseudo.min=1E-8, 
 				alpha=1,
 				sigma=2,
 				outlier.cut=0.01,
@@ -267,7 +267,7 @@ run.Ted <- function(ref.dat,
 		
 		processed.dat <- process_GEP (ref= ref.dat,
 									  mixture=X, 
-									  psudeo.min= psudeo.min,
+									  pseudo.min = pseudo.min,
 									  cell.type.labels= cell.type.labels)
 	}
 	if(input.type=="scRNA"){
@@ -275,7 +275,7 @@ run.Ted <- function(ref.dat,
 		
 		processed.dat <- process_scRNA (ref= ref.dat,
 										mixture=X, 
-										psudeo.min= psudeo.min, 
+										pseudo.min = pseudo.min, 
 										cell.type.labels= cell.type.labels, 
 										cell.subtype.labels = cell.subtype.labels)
 	}
@@ -312,7 +312,7 @@ run.Ted <- function(ref.dat,
 				 type.to.subtype.mapping = type.to.subtype.mapping, 
 				 alpha= alpha,
 				 sigma= sigma,
-				 psudeo.min= psudeo.min,
+				 pseudo.min = pseudo.min,
 				 gibbs.control= gibbs.control,
 				 opt.control= opt.control,
 				 n.cores= n.cores)

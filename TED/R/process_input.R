@@ -96,17 +96,17 @@ collapse.exp.df<-function(exp.df, sample.type.vec){
 }
 
 
-#normalize expression vec, s.t. it sum up to one, with the lowest one= psudeo.min
-norm.to.one<-function(exp.df, psudeo.min=1E-8){
+#normalize expression vec, s.t. it sum up to opseudone, with the lowest one= pseudo.min
+norm.to.one<-function(exp.df, pseudo.min=1E-8){
 	
 	exp.df.norm <-  do.call(rbind, lapply(1:nrow(exp.df),function(row.idx) {
 												vec <- exp.df[row.idx,]
 												count.tot <- sum(vec)
 												gene.num <- length(vec)
-												psuedo.count <- psudeo.min * count.tot / (1- gene.num* psudeo.min)
+												psuedo.count <- pseudo.min * count.tot / (1- gene.num* pseudo.min)
 												norm<- vec+ psuedo.count
 												norm <- norm/sum(norm)
-												norm[vec==0]<-psudeo.min
+												norm[vec==0]<-pseudo.min
 												norm
 	} )) 
 
@@ -116,18 +116,18 @@ norm.to.one<-function(exp.df, psudeo.min=1E-8){
 }
 
 
-process_GEP <- function (ref, mixture, psudeo.min, cell.type.labels){
+process_GEP <- function (ref, mixture, pseudo.min, cell.type.labels){
 	
 	aligned.dat <- align.exp.df(exp.df.list=list(ref,mixture), df.names=NULL)
 	
 	#this is over subtypes (no need to collapse)
 	ref.matched <- aligned.dat[[1]]
 	mixture.matched <- aligned.dat[[2]]
-	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
+	ref.matched.norm <- norm.to.one(exp.df=ref.matched, pseudo.min= pseudo.min)
 
 	#collapse over cell types
 	prior.matched <- collapse.exp.df(exp.df= ref.matched, sample.type.vec= cell.type.labels)
-	prior.matched.norm <- norm.to.one(exp.df= prior.matched, psudeo.min= psudeo.min)
+	prior.matched.norm <- norm.to.one(exp.df= prior.matched, pseudo.min= pseudo.min)
 	
 	return(list(ref.matched.norm= ref.matched.norm,
 				prior.matched.norm = prior.matched.norm,
@@ -135,7 +135,7 @@ process_GEP <- function (ref, mixture, psudeo.min, cell.type.labels){
 }
 
 
-process_scRNA <- function (ref, mixture, psudeo.min, cell.type.labels, cell.subtype.labels){
+process_scRNA <- function (ref, mixture, pseudo.min, cell.type.labels, cell.subtype.labels){
 	
 	#collapse over subtypes to get reference profile
 	ref.collapsed <- collapse.exp.df(exp.df=ref, sample.type.vec= cell.subtype.labels)
@@ -149,8 +149,8 @@ process_scRNA <- function (ref, mixture, psudeo.min, cell.type.labels, cell.subt
 	prior.matched <- aligned.dat[[2]]
 	mixture.matched <- aligned.dat[[3]]
 	
-	ref.matched.norm <- norm.to.one(exp.df=ref.matched, psudeo.min= psudeo.min)
-	prior.matched.norm <- norm.to.one(exp.df= prior.matched, psudeo.min= psudeo.min)
+	ref.matched.norm <- norm.to.one(exp.df=ref.matched, pseudo.min= pseudo.min)
+	prior.matched.norm <- norm.to.one(exp.df= prior.matched, pseudo.min= pseudo.min)
 		
 	return(list(ref.matched.norm= ref.matched.norm,
 				prior.matched.norm = prior.matched.norm,

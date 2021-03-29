@@ -1,4 +1,4 @@
-\name{run.Ted}
+pseudo\name{run.Ted}
 \alias{run.Ted}
 \title{
 Bayesian deconvolution module
@@ -13,7 +13,7 @@ run.Ted(ref.dat,
       cell.subtype.labels=NULL,
       tum.key=NULL,
       input.type= c("scRNA","GEP"),
-      psudeo.min=1E-8,
+      pseudo.min=1E-8,
       alpha=1, 
       sigma=2,
       outlier.cut=0.01,
@@ -34,7 +34,7 @@ run.Ted(ref.dat,
   \item{cell.subtype.labels}{vector indicating the cell subtype of each row of the raw count matrix of scRNA-seq or gene expression profile (GEP). The length needs be equal to nrow(ref.dat). Default is NULL, which uses the same value of cell.type.labels. Note that TED computes the posterior sum over the subtypes to get the total fraction / expression of each cell type. This allows a more fine-grained definition of cell types / cell states.}
   \item{tum.key}{The character in cell.type.labels denoting the tumor cells, e.g. "tumor" or "malignant".}
   \item{input.type}{A character string. ="scRNA" if using the raw count matrix of scRNA-seq as input; ="GEP" if using a collpased gene expression profile, preferably summed raw count(un-normalized), as input.}
-  \item{psudeo.min}{A numeric value indicating the minimum (non-zero) value of phi. Default=1E-8.}
+  \item{pseudo.min}{A numeric value indicating the minimum (non-zero) value of phi. Default=1E-8.}
   \item{alpha}{One positive numerical parameter or a numeircal vector of length equal nrow(input.phi), denoting the dirichlet hyper-parameter. Default=1, which represents a uniform prior over the simplex of theta. For sparser priors, use 0<alpha<1. Note that alpha usually does not affect the results, due to the dominating likelihood term resulted from the high sequencing depth of bulk RNA-seq.}
   \item{sigma}{One positive numerical parameter or a numeircal vector of length equal number of genes (for gene-specific prior), denoting the prior of the standard deviation of log fold change between the true expression and the reference.Default=2, which represents a weak gene-wise prior. User may provide their own sigma based on prior knowledge, such as differential expression analysis. }
   \item{outlier.cut & outlier.fraction}{Filter genes in X whose expression fraction is greater than outlier.cut (Default=0.01. previous version used 0.05) in more than outlier.fraction (Default=0.1) of bulk data. Typically for dataset with reasonalble quality contol in mapping, very few genes will be filtered. Removal of outlier genes will ensure that the inference will not be dominated by outliers, which sometimes may be resulted from poor QC in mapping.}  
