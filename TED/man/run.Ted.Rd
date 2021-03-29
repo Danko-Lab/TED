@@ -1,4 +1,4 @@
-pseudo\name{run.Ted}
+\name{run.Ted}
 \alias{run.Ted}
 \title{
 Bayesian deconvolution module

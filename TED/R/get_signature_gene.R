@@ -34,7 +34,7 @@ get.signature.genes <- function(ref.dat,
 								cell.type.labels,
 								use.hclust,
 								return.cell.type.name,
-								psudeo.min= 1E-8, 
+								pseudo.min= 1E-8, 
 								pval.cut =0.01,
 								topN=100,
 								n.cores){
@@ -46,7 +46,7 @@ get.signature.genes <- function(ref.dat,
 
 	if(use.hclust){
 		ref.collapsed <- collapse.exp.df(exp.df= ref.dat, sample.type.vec= cell.type.labels)
-		ref.matched.norm <- norm.to.one(exp.df= ref.collapsed, psudeo.min= psudeo.min)
+		ref.matched.norm <- norm.to.one(exp.df= ref.collapsed, pseudo.min= pseudo.min)
 		ref.matched.norm.log <- log2(ref.matched.norm)
 
 		ref.matched.norm.log.centered <- scale(ref.matched.norm.log,center=T,scale=F)

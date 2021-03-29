@@ -181,7 +181,7 @@ learn.embedding.withPhiTum <- function(ted.res,
 	
 	X <- ted.res$para$X
 	tum.key <- ted.res$para$tum.key
-	psudeo.min <- ted.res$para$psudeo.min
+	pseudo.min <- ted.res$para$pseudo.min
 	
 	if(is.null(alpha)) alpha <- ted.res$para$alpha 
 	if(is.null(sigma)) sigma <- ted.res$para$sigma
@@ -194,7 +194,7 @@ learn.embedding.withPhiTum <- function(ted.res,
 								  thinning = gibbs.control$thinning)
 	
 	
-	phi.tum.norm	 <- norm.to.one ( phi.tum ,psudeo.min= psudeo.min)
+	phi.tum.norm	 <- norm.to.one ( phi.tum ,pseudo.min= pseudo.min)
 	current.K <- nrow(phi.tum.norm)	
 	
 	cat("K=", current.K ,"\n")
@@ -244,7 +244,7 @@ learn.embedding.Kcls <- function(ted.res,
 	
 	X <- ted.res$para$X
 	tum.key <- ted.res$para$tum.key
-	psudeo.min <- ted.res$para$psudeo.min
+	pseudo.min <- ted.res$para$pseudo.min
 	
 	if(is.null(alpha)) alpha <- ted.res$para$alpha 
 	if(is.null(sigma)) sigma <- ted.res$para$sigma

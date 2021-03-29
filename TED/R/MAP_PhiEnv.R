@@ -78,7 +78,7 @@ MAP_PhiEnv <- function(ted.obj,
 	
 	theta.merged <- ted.obj $res$ first.gibbs.res$theta.merged
 
-	psudeo.min <- ted.obj$ para$psudeo.min
+	pseudo.min <- ted.obj$ para$pseudo.min
 	
 	input.phi <- ted.obj $ para$ input.phi.prior
 	tum.key <- ted.obj $ para$ tum.key
@@ -95,7 +95,7 @@ MAP_PhiEnv <- function(ted.obj,
 		cat("compute cell type",k,":", cell.type.name.k,"\n")
 		
 		Zng.k <-  Znkg.merged.env[,k,] #N by G matrix
-		Zng.k.norm <- norm.to.one(exp.df=Zng.k, psudeo.min= psudeo.min)
+		Zng.k.norm <- norm.to.one(exp.df=Zng.k, pseudo.min= pseudo.min)
 		
 		# only fit on gene with non-zero expression. For all zero genes, no need to include in the "regress out" step anyways.
 		express.genes.id <- apply(Zng.k,2,max)>0

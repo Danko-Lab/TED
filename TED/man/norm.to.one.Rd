@@ -1,4 +1,4 @@
-pseudo\name{norm.to.one}
+\name{norm.to.one}
 \alias{norm.to.one}
 \title{
 Utility function to prepare the input.phi

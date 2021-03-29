@@ -96,7 +96,7 @@ collapse.exp.df<-function(exp.df, sample.type.vec){
 }
 
 
-#normalize expression vec, s.t. it sum up to opseudone, with the lowest one= pseudo.min
+#normalize expression vec, s.t. it sum up to one, with the lowest one= pseudo.min
 norm.to.one<-function(exp.df, pseudo.min=1E-8){
 	
 	exp.df.norm <-  do.call(rbind, lapply(1:nrow(exp.df),function(row.idx) {
