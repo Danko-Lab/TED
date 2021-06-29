@@ -241,11 +241,14 @@ run.Ted <- function(ref.dat,
 	#check cell.type.labels and cell.subtype.labels
 	if(is.null(cell.subtype.labels)) cell.subtype.labels <- cell.type.labels
 	
+	#force to character
+	cell.type.labels <- as.character(cell.type.labels)
+	cell.subtype.labels <- as.character(cell.subtype.labels)
+	
 	#creat mapping between cell type and phenotype (cell type is a superset of phenotype)
 	type.to.subtype.mapping <- unique(cbind(cell.type=cell.type.labels, cell.subtype= cell.subtype.labels))
 	if (max(table(type.to.subtype.mapping[,"cell.subtype"]))>1) stop("Error: one or more subtypes belong to multiple cell types!")
 	if (length(unique(cell.type.labels)) > length(unique(cell.subtype.labels))) stop("Error: more cell types than subtypes!")
-
 
 	#rm any genes with non numeric values (including NA values)
 	print("removing non-numeric genes...")
