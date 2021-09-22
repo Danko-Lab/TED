@@ -38,7 +38,6 @@ merge.gibbs.res <-function(gibbs.theta, gibbs.Znkg, gibbs.Zkg, type.to.subtype.m
 	}
 	
 	#merge Zkg
-	Zkg.merged <- matrix(0,nrow=length(uniq.cell.types),ncol=ncol(gibbs.Zkg))
 	Zkg.merged <- apply(Znkg.merged,c(2,3),sum)
 	rownames(Zkg.merged) <- uniq.cell.types
 	colnames(Zkg.merged) <- colnames(gibbs.Zkg)
