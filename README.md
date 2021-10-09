@@ -32,13 +32,10 @@ Tinyi Chu and Charles Danko
 
 https://www.biorxiv.org/content/10.1101/2020.01.07.897900v3
 
---------
-
-
 3 Workflow of BayesPrism
 --------
-<img src="img/img1.png">
 
+<img src="img/img1.png">
 
 4 Installation
 --------
