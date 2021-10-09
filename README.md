@@ -13,8 +13,19 @@ v1.3: added function get.signature.genes that uses hierarchical clustering to ge
 
 v2.0: added two new functions estimate_sf and convert.cell.fraction (vignette and help function to be added soon), and updated a new tutorial example with both raw scRNA data and GEP and vignette. These two new functions convert fraction of reads of each cell type (from the run.Ted output) to the fraction of number of cells. Users are recommended to stick to the original fraction of reads of each cell type (the original run.Ted output) as it is more accurate and also sufficient for most applications. 
 
-Cite BayesPrism:
---------
+
+1 Cloud Computing Service:
+---------------
+
+We provide a computational gateway to run dTOX on a GPU server. This gateway allows users to upload bigWig files and download the results, without installing any software, making it simple and easy to find transcription factor binding patterns.
+
+Please click the link to try this site:
+
+https://dreg.dnasequence.org/
+
+2 Cite BayesPrism:
+-----------
+
 Bayesian cell-type deconvolution and gene expression inference reveals tumor-microenvironment interactions
 
 Tinyi Chu and Charles Danko
@@ -24,21 +35,17 @@ https://www.biorxiv.org/content/10.1101/2020.01.07.897900v3
 --------
 
 
-
-Workflow of BayesPrism
+3 Workflow of BayesPrism
 --------
 <img src="img/img1.png">
 
 
-Requires
+4 Installation
 --------
 
 * R packages:
 	
 	DESeq2(>1.22.2), MCMCpack(> 1.4-4), parallel, gplots, scran, BiocParallel
-	
-Installation
---------
 
 * If all dependent packages and commands have been installed, please use the following codes to install/update the package in R terminal. 
 
@@ -48,7 +55,7 @@ install_github("Danko-Lab/TED/TED")
 ```````
 
 
-Usage
+5 Usage
 ----------
 library(TED)
 
@@ -61,12 +68,12 @@ R functions:
 run.Ted, learn.embedding.withPhiTum, learn.embedding.Kcls
 
 	
-Output
+6 Output
 ----------
 use ?function_name for more details
 
 
-Generating the reference expression matrix from scRNA-seq data (FAQ)
+7 Generating the reference expression matrix from scRNA-seq data (FAQ)
 ----------------------------------------------------------------------
 1) What if there are missing cell types?
 
@@ -100,11 +107,11 @@ NO. BayesPrism uses the raw count to generate the reference profile, and automat
 
 Ideally users should keep the sequencing depth roughly the same across cell types, but in general, BayesPrism is robust to the variation in the sequencing depth, and maintains the relative ratio in inferred fractions even if an extremely shallowly sequenced cell type is used, such as the T cell in refGBM8. 
 
-Interpreting the results of deconvolution
+8 Interpreting the results of deconvolution
 --------------------------------------------------
 BayesPrism keeps both θ0, the initial estimates of cell type compositions, and θ, the updated estimates of cell type compositions in the output. In most cases, users should use the updated θ as it often improves over the initial estimates. Occasionally in some cases, the initial estimates θ0 shall be used. For example, the mixture contains small amount of tumor fraction (<50%), or the reference and mixture do not have batch effects, e.g. reference profiles are obtained from the same bulk RNA-seq platforms from flow-sorted cells, or the way that non-tumor cell types are defined represent a heterogeneous population. 
 
-Typical runtime of TED
+9 Typical runtime of TED
 --------
 <img src="img/img2.png">
 Test case: refGBM8 deconvolve GBM280
@@ -112,7 +119,7 @@ Test case: refGBM8 deconvolve GBM280
 The computing time of CIBERSORTx is tested on https://cibersortx.stanford.edu.
 The computing time of TED is tested on Intel(R) Xeon(R) CPU E5-4620 v2 @ 2.60GHz.
 
-Documents
+10 Documents
 ----------
 
 * R vignette:
