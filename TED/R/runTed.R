@@ -38,6 +38,7 @@ merge.gibbs.res <-function(gibbs.theta, gibbs.Znkg, gibbs.Zkg, type.to.subtype.m
 	}
 	
 	#merge Zkg
+	Zkg.merged <- matrix(0,nrow=length(uniq.cell.types),ncol=ncol(gibbs.Zkg))
 	Zkg.merged <- apply(Znkg.merged,c(2,3),sum)
 	rownames(Zkg.merged) <- uniq.cell.types
 	colnames(Zkg.merged) <- colnames(gibbs.Zkg)
@@ -228,7 +229,8 @@ run.Ted <- function(ref.dat,
 				n.cores=1,
 				n.cores.2g=NULL,
 				pdf.name=NULL,
-				first.gibbs.only=F){
+				first.gibbs.only=F,
+				if.vst=TRUE){
 				    	
 	#check input data format
 	if( is.null(colnames(ref.dat))) stop("Error: please specify the gene names of ref.dat!")
@@ -324,25 +326,30 @@ run.Ted <- function(ref.dat,
 	#perform vst transformation and make heatmap for tumor 
 	if(!is.null(tum.key)){
 		Zkg.tum <- ted.res$res$first.gibbs.res$Zkg.tum
-		#whether possible to compute vst transformation on tumor expression
-		#if every gene has at least one zero, vst is not possible, then only export Zkg.tum.norm
 		Zkg.tum.round <- t(round(Zkg.tum))
 		
-		if.vst <- sum(apply(Zkg.tum.round,1,min)==0)< nrow(Zkg.tum.round)
+		#whether user needs vst, default to TRUE. If error occurs, please set to FALSE.
+		Zkg.tum.vst <- NULL
+		Zkg.tum.cor <- ted.res$res$first.gibbs.res$Zkg.tum.norm
+		if(if.vst){
+			#whether possible to compute vst transformation on tumor expression
+			#if every gene has at least one zero, vst is not possible, then only export Zkg.tum.norm
+			if.vst <- sum(apply(Zkg.tum.round,1,min)==0)< nrow(Zkg.tum.round)
 		
-		if(if.vst & nrow(Zkg.tum.round)>1) {
-			print("vst transformation is feasible")
-			Zkg.tum.vst <- vst(Zkg.tum.round, nsub= min(nrow(Zkg.tum.round)/5,1000)) #adjust nsub, to avoid error when too few genes are used
-			cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst)
+			if(if.vst & ncol(Zkg.tum.round)>1) {
+				print("vst transformation is feasible")
+				Zkg.tum.vst <- vst(Zkg.tum.round, nsub= min(nrow(Zkg.tum.round)/5,1000)) #adjust nsub, to avoid error when too few genes are used
+			}
+			else {
+				if(ncol(Zkg.tum.round)==1) print("only one mixture sample. vst transformation is NOT feasible")
+				else print("every gene has at least one zero. vst transformation is NOT feasible")
+			}
 		}
-		else {
-			if(nrow(Zkg.tum.round)==1) print("only one mixture sample. vst transformation is NOT feasible")
-			else print("every gene has at least one zero. vst transformation is NOT feasible")
-			Zkg.tum.vst <- NULL
-			cor.mat <- get.cormat ( Zkg.tum= ted.res$res$first.gibbs.res$Zkg.tum.norm )
-		}
-		
 		ted.res$res$first.gibbs.res$Zkg.tum.vst <- Zkg.tum.vst
+		
+		#compute correlation matrix of tumor expression
+		if(is.null(Zkg.tum.vst)) cor.mat <- get.cormat ( Zkg.tum= ted.res$res$first.gibbs.res$Zkg.tum.norm)
+		else cor.mat <- get.cormat ( Zkg.tum= Zkg.tum.vst)
 		ted.res$res$first.gibbs.res$cor.mat <- cor.mat
 		
 		if(!is.null(pdf.name) & nrow(Zkg.tum.round)>1) plot.heatmap(dat= cor.mat, pdf.name= pdf.name, cluster=T, self=T, show.value=F, metric="is.cor")
