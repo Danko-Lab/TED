@@ -16,7 +16,7 @@ merge.gibbs.res <-function(gibbs.theta, gibbs.Znkg, gibbs.Zkg, type.to.subtype.m
 	#merge theta
 	theta.merged <- do.call(cbind,lapply(uniq.cell.types, function(cell.type.i) {
 		theta.cell.type.i <- gibbs.theta[, type.to.subtype.mapping[,"cell.type"]== cell.type.i,drop=F]
-		theta.cell.type.i.merged <- apply(theta.cell.type.i,1,sum)
+		theta.cell.type.i.merged <- rowSums(theta.cell.type.i)
 	}))
 	
 	colnames(theta.merged) <- uniq.cell.types

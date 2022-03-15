@@ -61,7 +61,7 @@ sample.n <- function(X.i, theta.ini.i, phi.hat, alpha, gibbs.idx, conditional.id
 		for (g in 1:G) gibbs.Z.i[,g] <- rmultinom(n=1, size=X.i[g], prob= prob.mat[,g])
 						
 		# sample theta for patient i
-		gibbs.Z.i.k <- apply(gibbs.Z.i,1,sum) #total count for each cell type
+		gibbs.Z.i.k <- rowSums(gibbs.Z.i) #total count for each cell type
 		gibbs.theta.i <- rdirichlet(1, gibbs.Z.i.k[free.idx] + alpha)[1,]
 		gibbs.theta.i <- c(gibbs.theta.i * gibbs.theta.i.free.scale.factor, gibbs.theta.i.conditional)
 				
@@ -239,7 +239,7 @@ optimize.psi<-function(input.phi,
 	#modify this line later, as final version may work with genewise sigma	
 	G<-ncol(input.phi)
 				 
-	Zk <- apply(Zkg,1,sum)
+	Zk <- rowSums(Zkg)
 
 	#optimize psi envir for each patient
 		  			  					  		
