@@ -150,7 +150,10 @@ run.Ted.main <- function(input.phi,
 					  			  n.cores= n.cores)
 	
 	if(!is.null(tum.key)){
-		first.gibbs.res$Zkg.tum <- first.gibbs.res$Znkg.merged[, tum.key,]	
+		first.gibbs.res$Zkg.tum <- first.gibbs.res$Znkg.merged[, tum.key, ]
+		if(is.null(dim(first.gibbs.res$Zkg.tum))) first.gibbs.res$Zkg.tum <- matrix(first.gibbs.res$Zkg.tum,
+																					nrow=1,
+																					dimnames=dimnames(first.gibbs.res$Znkg.merged)[c(1,3)])
 		first.gibbs.res$Zkg.tum.norm <- norm.to.one(first.gibbs.res$Zkg.tum, min(input.phi))
 	}
 		
