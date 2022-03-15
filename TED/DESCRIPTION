@@ -1,5 +1,5 @@
 Package: TED
-Version: 1.1
+Version: 1.3
 Date: 2020-01-15
 Title: BayesPrism: A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression. Formerly called TED (Tumor microEnvironment Deconvolution).
 Author: Tinyi Chu<tc532@cornell.edu>, Charles G. Danko <dankoc@gmail.com>
