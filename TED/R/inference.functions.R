@@ -88,7 +88,7 @@ sample.n <- function(X.i, theta.ini.i, phi.hat, alpha, gibbs.idx, conditional.id
 }
 	
 
-draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditional.idx, n.cores, compute.posterior){
+draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditional.idx, n.cores, compute.posterior, seed){
 	
 	N<-nrow(X)
 	G<-ncol(phi.hat)
@@ -97,6 +97,7 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 	cat("current sample ID:")
 	Zkg.theta <- mclapply(1:N, FUN=function(i){
 								   cat(i," ");
+								   if(!is.null(seed)) set.seed(seed)
 								   sample.n(X.i=X[i,],
 								   theta.ini.i = theta.ini[i,], 
 								   phi.hat = phi.hat,
@@ -148,7 +149,8 @@ draw.sample.gibbs.individualPhi <-function(theta.ini,
 										   alpha, 
 										   tum.key, 
 										   thinned.idx, 
-										   n.cores){
+										   n.cores,
+										   seed){
 	
 	N <- nrow(X)
 	K.tot <-  nrow(phi.hat.env) +1 
@@ -156,6 +158,7 @@ draw.sample.gibbs.individualPhi <-function(theta.ini,
 	cat("current sample ID:")	
 	Zkg.theta <- mclapply(1:N, FUN=function(i){
 								   cat(i," ");
+								   if(!is.null(seed)) set.seed(seed)
 								   sample.n(X.i=X[i,],
 								   			theta.ini.i = theta.ini[i,], 
 								   			phi.hat = rbind(phi.tum[i,], phi.hat.env),

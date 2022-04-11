@@ -25,7 +25,8 @@ run.Ted(ref.dat,
       n.cores=1,
       n.cores.2g=NULL,
       pdf.name=NULL,
-      first.gibbs.only=F)
+      first.gibbs.only=F,
+      seed=NULL)
 }
 \arguments{
   \item{ref.dat}{a matrix containing the raw count of scRNA-seq OR collpased gene expression profile scRNA-seq. Each row is a cell (input.type="scRNA") or a cell type (input.type="GEP"); each column is a gene. rownames of ref.dat are cell IDs (input.type="scRNA") or cell type names(input.type="GEP"); colnames of ref.dat are gene IDs.}
@@ -46,6 +47,7 @@ run.Ted(ref.dat,
   \item{n.cores.2g}{Number of CPU threads used for parallel computing for the final Gibbs sampling. Default=NULL (same as ncores). Recommended to set to a number smaller than n.cores, if deconvolving large number of mixtures, such as Visium data, or the number of cell types is large, to avoid memory overflow.}
   \item{pdf.name}{The name of the pdf file containing the correlation heatmap of tumor gene expression to be ploted. Default=NULL (do not plot).}
   \item{first.gibbs.only}{A logical parameter denoting if to only run the first gibbs sampling, i.e. the initial estimates of theta and Z. Default: FALSE}
+  \item{seed}{A numerical number specifying the random seed number to generate identical results between different runs. Default: NULL(ignore reproducibility). }
 }
 \details{
 }

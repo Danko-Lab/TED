@@ -53,7 +53,8 @@ run.gibbs <- function(input.phi,
 					  type.to.subtype.mapping,
 					  alpha,
 					  thinned.idx,
-					  n.cores){
+					  n.cores,
+					  seed){
 
 	N<-nrow(X)
 	G<-ncol(input.phi)
@@ -69,7 +70,8 @@ run.gibbs <- function(input.phi,
 				  			 		thinned.idx = thinned.idx,
 				  			 		conditional.idx = NULL,
 				  			 		n.cores = n.cores,
-				  			 		compute.posterior = F)		
+				  			 		compute.posterior = F,
+				  			 		seed= seed)		
 	
 	if(!is.null(type.to.subtype.mapping)){
 		#perform merging
@@ -100,7 +102,8 @@ run.gibbs.individualPhi <- function( phi.tum,
 									 tum.key= tum.key,
 									 thinned.idx,
 									 n.cores=40,
-									 theta.ini=NULL){
+									 theta.ini=NULL,
+									 seed){
 	
 	stopifnot(ncol(phi.tum)==ncol(phi.hat.env))	
 
@@ -119,7 +122,8 @@ run.gibbs.individualPhi <- function( phi.tum,
 				  			 		alpha= alpha,
 				  			 		tum.key= tum.key,
 				  			 		thinned.idx= thinned.idx,
-				  			 		n.cores= n.cores)		
+				  			 		n.cores= n.cores,
+				  			 		seed= seed)		
 	return(theta.final)
 }
 
@@ -135,7 +139,8 @@ run.Ted.main <- function(input.phi,
 						  opt.control,
 						  n.cores,
 						  n.cores.2g,
-						  first.gibbs.only){
+						  first.gibbs.only,
+						  seed){
 
 	thinned.idx <- get.gibbs.idx (chain.length = gibbs.control$chain.length, 
 								  burn.in = gibbs.control$burn.in, 
@@ -147,7 +152,8 @@ run.Ted.main <- function(input.phi,
 					  			  type.to.subtype.mapping = type.to.subtype.mapping,
 					  			  alpha= alpha,
 					  			  thinned.idx = thinned.idx,
-					  			  n.cores= n.cores)
+					  			  n.cores= n.cores,
+					  			  seed= seed)
 	
 	if(!is.null(tum.key)){
 		first.gibbs.res$Zkg.tum <- first.gibbs.res$Znkg.merged[, tum.key, ]
@@ -179,7 +185,8 @@ run.Ted.main <- function(input.phi,
 				   								 alpha=1,
 				   								 tum.key= tum.key, 
 				   								 thinned.idx = thinned.idx,
-				   								 n.cores= n.cores.2g)
+				   								 n.cores= n.cores.2g,
+				   								 seed= seed)
 	
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
@@ -194,7 +201,8 @@ run.Ted.main <- function(input.phi,
 					  			       type.to.subtype.mapping = NULL,
 					  			       alpha= alpha,
 					  			       thinned.idx = thinned.idx,
-					  			       n.cores = n.cores.2g) $gibbs.theta
+					  			       n.cores = n.cores.2g,
+					  			       seed= seed) $gibbs.theta
 		
 		percentage.tab<-apply(final.gibbs.theta,2,summary)	
 		print(round(percentage.tab,3))
@@ -233,7 +241,8 @@ run.Ted <- function(ref.dat,
 				n.cores.2g=NULL,
 				pdf.name=NULL,
 				first.gibbs.only=F,
-				if.vst=TRUE){
+				if.vst=TRUE,
+				seed=NULL){
 				    	
 	#check input data format
 	if( is.null(colnames(ref.dat))) stop("Error: please specify the gene names of ref.dat!")
@@ -310,7 +319,8 @@ run.Ted <- function(ref.dat,
 			 	  opt.control= opt.control,
 			 	  n.cores= n.cores,
 			 	  n.cores.2g=n.cores.2g,			 	  
-			 	  first.gibbs.only= first.gibbs.only)
+			 	  first.gibbs.only= first.gibbs.only,
+			 	  seed= seed)
 
 	para <- list(X=processed.dat$mixture.matched,
 				 input.phi= processed.dat$ref.matched.norm,
