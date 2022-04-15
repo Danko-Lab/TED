@@ -15,7 +15,7 @@ v1.3: added function get.signature.genes that uses hierarchical clustering to ge
 1 Cloud Computing Service:
 ---------------
 
-We provide a computational gateway to run dTOX on a GPU server. This gateway allows users to upload bigWig files and download the results, without installing any software, making it simple and easy to find transcription factor binding patterns.
+We provide a computational gateway to run BayesPrism on a HPC server. 
 
 Please click the link to try this site:
 
