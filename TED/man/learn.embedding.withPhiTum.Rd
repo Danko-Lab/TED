@@ -18,7 +18,8 @@ learn.embedding.withPhiTum(ted.res,
 							             opt.control=NULL,
 							             n.cores=NULL,
 							             print.accuracy=F,
-							             compute.posterior=F)
+							             compute.posterior=F，
+							             seed=NULL)
 }
 \arguments{
   \item{ted.res}{The object returned by TED deconvolution module.}
@@ -32,6 +33,7 @@ learn.embedding.withPhiTum(ted.res,
    \item{ncores}{Number indicating CPU cores in parallel computing.  Default (NULL) uses the value used in the deconvolution.}
   \item{print.accuracy}{A logical parameter indicating if the classification accuracy is to be computed and printed. The classification accuracy is defined as the percentage of samples of the most similar estimated expression profile (based on Naive Bayes classifier or correlation approaches) corresponds to the correct sample. Defaul=FALSE.}
   \item{compute.posterior}{A logical parameter indicating whether the posterior is to be computed for every EM cycle. Defaul=FALSE.}
+  \item{seed}{A numerical number specifying the random seed number to generate identical results between different runs. Default: NULL(ignore reproducibility). }
 }
 \details{
 }

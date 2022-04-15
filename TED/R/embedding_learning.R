@@ -53,7 +53,8 @@ run.EM <- function(phi.tum,
 				   EM.res=NULL,
 				   X.tum=NULL,
 				   print.accuracy=F,
-				   compute.posterior=F){
+				   compute.posterior=F,
+				   seed=NULL){
 	N<-nrow(X)
 	G<-ncol(phi.tum)
 	K.tum <- nrow(phi.tum)
@@ -88,7 +89,8 @@ run.EM <- function(phi.tum,
 				  			 		thinned.idx= thinned.idx,
 				  			 		conditional.idx= (K.tum+1): K.tot,
 				  			 		n.cores= n.cores,
-				  			 		compute.posterior = compute.posterior)		
+				  			 		compute.posterior = compute.posterior,
+				  			 		seed= seed)		
 		
 		#print("optimizing psi...")
 		opt.res <- optimize.psi(input.phi = phi.tum,
@@ -172,7 +174,8 @@ learn.embedding.withPhiTum <- function(ted.res,
 							opt.control=NULL,
 							n.cores=NULL,
 							print.accuracy=F,
-							compute.posterior=F){
+							compute.posterior=F,
+							seed=NULL){
 	
 	Zkg.tum.norm <- ted.res$res$first.gibbs.res$Zkg.tum.norm
 	phi.env <- ted.res$res$phi.env
@@ -214,7 +217,8 @@ learn.embedding.withPhiTum <- function(ted.res,
 								   theta.ini= theta.ini,
 								   X.tum= X.tum,
 								   print.accuracy= print.accuracy,
-								   compute.posterior= compute.posterior)
+								   compute.posterior= compute.posterior,
+								   seed= seed)
 				
 	return(embed.EM.res)
 
@@ -235,7 +239,8 @@ learn.embedding.Kcls <- function(ted.res,
 							opt.control=NULL,
 							n.cores=NULL,
 							print.accuracy=F,
-							compute.posterior=F){
+							compute.posterior=F,
+							seed=NULL){
 	
 	Zkg.tum.norm <- ted.res$res$first.gibbs.res$Zkg.tum.norm
 	phi.env <- ted.res$res$phi.env
@@ -278,7 +283,8 @@ learn.embedding.Kcls <- function(ted.res,
 								   theta.ini= theta.ini,
 								   X.tum= X.tum,
 								   print.accuracy= print.accuracy,
-								   compute.posterior= compute.posterior)
+								   compute.posterior= compute.posterior,
+								   seed= seed)
 			
 			embed.EM.res.list[[length(embed.EM.res.list)+1]] <- embed.EM.res
 			
