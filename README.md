@@ -1,5 +1,7 @@
-TED (now called BayesPrism)
+BayesPrism (previous called TED)
 ========
+
+**A new version with improved memory usage and user interface will be updated in ~1 week.**
 
 Bayesian cell Proportion Reconstruction Inferred using Statistical Marginalization (BayesPrism): A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression
 
