@@ -1,11 +1,11 @@
 Package: TED
-Version: 1.3
-Date: 2020-01-15
+Version: 1.4
+Date: 2022-05-09
 Title: BayesPrism: A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression. Formerly called TED (Tumor microEnvironment Deconvolution).
 Author: Tinyi Chu<tc532@cornell.edu>, Charles G. Danko <dankoc@gmail.com>
 Maintainer: Tinyi Chu<tc532@cornell.edu>
-Depends: R (>= 2.6)
-Imports: DESeq2, parallel, MCMCpack, gplots, scran, BiocParallel
+Depends: R (>= 2.6), snowfall
+Imports: DESeq2, gplots
 Description: TED is comprised of the deconvolution modules and the embedding learning module. The deconvolution module leverages cell type-specific expression profiles from scRNA-seq and implements a fully Bayesian inference to jointly estimate the posterior distribution of cell type composition and cell type-specific gene expression from bulk RNA-seq expression of tumor samples. The embedding learning module uses Expectation-maximization (EM) to approximate the tumor expression using a linear combination of tumor pathways while conditional on the inferred expression and fraction of non-tumor cells estimated by the deconvolution module. 
 License: GPL-2 | GPL-3
 biocViews: Sequencing, Analysis

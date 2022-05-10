@@ -1,8 +1,6 @@
 BayesPrism (previous called TED)
 ========
 
-**A new version with improved memory usage and user interface will be updated in ~1 week.**
-
 Bayesian cell Proportion Reconstruction Inferred using Statistical Marginalization (BayesPrism): A Fully Bayesian Inference of Tumor Microenvironment composition and gene expression
 
 BayesPrism consists of the deconvolution modules and the embedding learning module. The deconvolution module leverages cell type-specific expression profiles from scRNA-seq and implements a fully Bayesian inference to jointly estimate the posterior distribution of cell type composition and cell type-specific gene expression from bulk RNA-seq expression of tumor samples. The embedding learning module uses Expectation-maximization (EM) to approximate the tumor expression using a linear combination of tumor pathways while conditional on the inferred expression and fraction of non-tumor cells estimated by the deconvolution module. 
@@ -13,6 +11,7 @@ v1.2: added function cleanup.genes that helps clean up genes sensitive to batch 
 
 v1.3: added function get.signature.genes that uses hierarchical clustering to get signature genes. Subsetting on signature genes is helpful when batch effects are severe while reference cell types are similar in gene expression profiles. (help function to be added soon)
 
+v1.4: replaced mclapply with sflapply from snowfall to improve memory efficiency.
 
 1 Cloud Computing Service:
 ---------------

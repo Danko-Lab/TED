@@ -31,6 +31,14 @@ transform.phi.mat <- function (input.phi, log.fold){
 }
 
 
+#' function that generates one sample from Dirichlet distribution
+#' param alpha a numeric vector to represent the parameter of dirichlet distribution
+#' return a numeric vector (one sample from Dirichlet distribution)
+rdirichlet <- function (alpha){
+    l <- length(alpha)
+    x <- rgamma(length(alpha), alpha)
+    return(x/sum(x))
+}
 
 
 
@@ -62,7 +70,7 @@ sample.n <- function(X.i, theta.ini.i, phi.hat, alpha, gibbs.idx, conditional.id
 						
 		# sample theta for patient i
 		gibbs.Z.i.k <- rowSums(gibbs.Z.i) #total count for each cell type
-		gibbs.theta.i <- rdirichlet(1, gibbs.Z.i.k[free.idx] + alpha)[1,]
+		gibbs.theta.i <- rdirichlet(alpha = gibbs.Z.i.k[free.idx] + alpha)
 		gibbs.theta.i <- c(gibbs.theta.i * gibbs.theta.i.free.scale.factor, gibbs.theta.i.conditional)
 				
 		if(idx %in% gibbs.idx) {
@@ -94,41 +102,49 @@ draw.sample.gibbs <-function(theta.ini, phi.hat, X, alpha, thinned.idx, conditio
 	G<-ncol(phi.hat)
 	K.tot <-  nrow(phi.hat) 
 	
-	cat("current sample ID:")
-	Zkg.theta <- mclapply(1:N, FUN=function(i){
-								   cat(i," ");
-								   if(!is.null(seed)) set.seed(seed)
-								   sample.n(X.i=X[i,],
-								   theta.ini.i = theta.ini[i,], 
-								   phi.hat = phi.hat,
-								   alpha = alpha,
-								   gibbs.idx= thinned.idx,
-								   conditional.idx= conditional.idx,
-								   compute.posterior= compute.posterior)}, mc.cores=n.cores)
-	 cat("\n") 
+	cat("Start run... This may take a while \n")
+	sfInit(parallel = TRUE, cpus = n.cores, type = "SOCK" )
+	sfExport("phi.hat", "X", "alpha", "theta.ini",
+			 "thinned.idx", "conditional.idx", "seed", "compute.posterior")
+
+	cpu.fun <- function(i) {
+		if(!is.null(seed)) set.seed(seed)
+		require(TED)
+		sample.n(X.i=X[i,],
+		theta.ini.i = theta.ini[i,], 
+		phi.hat = phi.hat,
+		alpha = alpha,
+		gibbs.idx= thinned.idx,
+		conditional.idx= conditional.idx,
+		compute.posterior= compute.posterior)
+	}
+	environment(cpu.fun) <- globalenv()
+	Zkg.theta <- sfLapply( 1:N, cpu.fun)
+	sfStop()
+	
 	 
-	 gibbs.theta <- array(NA,c(N, K.tot))
-	 rownames(gibbs.theta) <- rownames(X)
-	 colnames(gibbs.theta) <- rownames(phi.hat)
+	gibbs.theta <- array(NA,c(N, K.tot))
+	rownames(gibbs.theta) <- rownames(X)
+	colnames(gibbs.theta) <- rownames(phi.hat)
 	 
-	 Zkg <- array(0,c(K.tot,G))
-	 rownames(Zkg) <- rownames(phi.hat)
-	 colnames(Zkg) <- colnames(phi.hat)
+	Zkg <- array(0,c(K.tot,G))
+	rownames(Zkg) <- rownames(phi.hat)
+	colnames(Zkg) <- colnames(phi.hat)
 	 
-	 Znkg <- array(NA,
-	 			   dim=c(N, K.tot, G),
-	 			   dimnames = list(rownames(X), 
+	Znkg <- array(NA,
+	 			  dim=c(N, K.tot, G),
+	 			  dimnames = list(rownames(X), 
 	 			                   rownames(phi.hat),
 	 			                   colnames(phi.hat)))
 	 
-	 const<-0
+	const<-0
 	 
-	 for (n in 1:N) {
-	 	Znkg[n,,] <- Zkg.theta[[n]]$Zkg.i
-	 	Zkg <- Zkg + Zkg.theta[[n]]$Zkg.i
-	 	gibbs.theta[n,] <- Zkg.theta[[n]]$gibbs.theta.i
-	 	const <- const + Zkg.theta[[n]]$const
-	 }
+	for (n in 1:N) {
+		Znkg[n,,] <- Zkg.theta[[n]]$Zkg.i
+		Zkg <- Zkg + Zkg.theta[[n]]$Zkg.i
+		gibbs.theta[n,] <- Zkg.theta[[n]]$gibbs.theta.i
+		const <- const + Zkg.theta[[n]]$const
+	}
 
 	return(list(gibbs.theta= gibbs.theta, 
 				Znkg = Znkg,
@@ -155,24 +171,32 @@ draw.sample.gibbs.individualPhi <-function(theta.ini,
 	N <- nrow(X)
 	K.tot <-  nrow(phi.hat.env) +1 
 	
-	cat("current sample ID:")	
-	Zkg.theta <- mclapply(1:N, FUN=function(i){
-								   cat(i," ");
-								   if(!is.null(seed)) set.seed(seed)
-								   sample.n(X.i=X[i,],
-								   			theta.ini.i = theta.ini[i,], 
-								   			phi.hat = rbind(phi.tum[i,], phi.hat.env),
-								   			alpha = alpha,
-								   			gibbs.idx= thinned.idx,
-								   			conditional.idx= NULL,
-								   			compute.posterior=F)}, mc.cores=n.cores)
-	 cat("\n")
-	  							   					 
-	 gibbs.theta <- array(NA,c(N, K.tot))
-	 rownames(gibbs.theta) <- rownames(X)
-	 colnames(gibbs.theta) <- c(tum.key, rownames(phi.hat.env))
+	cat("Start run... This may take a while \n")
+	sfInit(parallel = TRUE, cpus = n.cores, type = "SOCK" )
+	sfExport("phi.hat.env", "phi.tum", "X", "alpha", 
+			"theta.ini", "thinned.idx", "seed")
+
+	cpu.fun <- function(i) {
+		if(!is.null(seed)) set.seed(seed)
+		require(TED)
+		sample.n(X.i=X[i,],
+		theta.ini.i = theta.ini[i,], 
+		phi.hat = rbind(phi.tum[i,], phi.hat.env),
+		alpha = alpha,
+		gibbs.idx= thinned.idx,
+		conditional.idx= NULL,
+		compute.posterior= F)
+	}
+	environment(cpu.fun) <- globalenv()
+	Zkg.theta <- sfLapply( 1:N, cpu.fun)
+	sfStop()
+
+			   					 
+	gibbs.theta <- array(NA,c(N, K.tot))
+	rownames(gibbs.theta) <- rownames(X)
+	colnames(gibbs.theta) <- c(tum.key, rownames(phi.hat.env))
 	 	 
-	 for (n in 1:N) gibbs.theta[n,] <- Zkg.theta[[n]]$gibbs.theta.i
+	for (n in 1:N) gibbs.theta[n,] <- Zkg.theta[[n]]$gibbs.theta.i
 
 	return(gibbs.theta)
 
@@ -195,10 +219,8 @@ log.posterior.psi <- function (parameters.psi.k,
   psi.stab <- parameters.psi.k-stablizing.constant
   scale.const <- sum(input.phi * exp(psi.stab)) 		
   pert.phi.log.k <- input.phi.log + psi.stab -log(scale.const)
- 
-  # should find time to merge the stablizing operations in Rcgmin
- 
-  log.likelihood <-  (Zkg.k %*% pert.phi.log.k) [1]
+  
+  log.likelihood <-  sum(Zkg.k * pert.phi.log.k)
 
   log.prior <- sum(prior.vec * parameters.psi.k ^2) #elementalwise prod
   
@@ -236,26 +258,27 @@ optimize.psi<-function(input.phi,
 					   prior.mat,
 					   opt.control,
 					   n.cores){
-					   	
-	# now consider sigma is a lenght(K)*G matrix, specifying gene and cell type-specific prior distribution. 
-	
-	#modify this line later, as final version may work with genewise sigma	
-	G<-ncol(input.phi)
-				 
+					   					 
 	Zk <- rowSums(Zkg)
 
-	#optimize psi envir for each patient
-		  			  					  		
-	opt.res <- mclapply(1:nrow(input.phi), function(idx){
-	  			  		Rcgminu(par= rep(0,G),
-	  								fn= log.posterior.psi,
-	  								gr= log.posterior.psi.grad,
-	  			  					control= opt.control, 
-	  			  					input.phi = input.phi[idx,],
-	  			  					input.phi.log = log(input.phi[idx,]),
-	  			  					Zkg.k=Zkg[idx,], Zk.k= Zk[idx],
-	  			  					prior.vec = prior.mat[idx,])
-	  			  		},mc.cores= n.cores)
+	cat("Start optimization... This may take a while \n")
+	sfInit(parallel = TRUE, cpus = n.cores, type = "SOCK" )
+	sfExport("input.phi", "Zkg", "Zk", "prior.mat", "opt.control")
+
+	cpu.fun <- function(idx) {
+		require(TED)
+		Rcgminu(par= rep(0,ncol(input.phi)),
+		fn= log.posterior.psi,
+		gr= log.posterior.psi.grad,
+		control= opt.control, 
+		input.phi = input.phi[idx,],
+		input.phi.log = log(input.phi[idx,]),
+		Zkg.k=Zkg[idx,], Zk.k= Zk[idx],
+		prior.vec = prior.mat[idx,])
+	}
+	environment(cpu.fun) <- globalenv()
+	opt.res <- sfLapply( 1:nrow(input.phi), cpu.fun)
+	sfStop()
 
 
 	opt.psi <- do.call(rbind,lapply(opt.res, function(res) res$par))
