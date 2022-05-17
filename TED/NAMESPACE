@@ -1,6 +1,8 @@
 import(snowfall)
 import(DESeq2)
 import(gplots)
+import(stats)
+import(utils)
 
 export(cleanup.genes)
 export(get.signature.genes)
